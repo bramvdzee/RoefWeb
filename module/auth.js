@@ -82,8 +82,6 @@ module.exports = {
 
                             if(err) throw err;
 
-                            console.log(user.rolnaam);
-
                             return res.status(200).json({
                                     message: "OK",
                                     authToken: authToken,

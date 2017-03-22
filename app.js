@@ -5,6 +5,8 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var LocalStorage = require('node-localstorage').LocalStorage;
+localStorage = new LocalStorage('./scratch');
 
 var cors = require('cors');
 
@@ -23,6 +25,8 @@ var login = require('./routes/api/login');
 var weekstaat = require('./routes/api/weekstaat');
 
 var app = express();
+
+
 
 // view engine setup
 app.engine('.hbs', exphbs({extname: '.hbs', defaultLayout: 'main'}));
@@ -49,6 +53,8 @@ app.use('/api/rol', rol);
 app.use('/api/wagentype', wagentype);
 app.use('/api/login', login);
 app.use('/api/weekstaat', weekstaat);
+
+app.locals.storage = localStorage;
 
 app.locals.connection = mysql.createConnection({
   host: "databases.aii.avans.nl",
