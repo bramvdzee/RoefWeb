@@ -1,0 +1,30 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Inloggen</title>
+    <link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/bootstrap-theme.min.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/signin.css">
+  </head>
+
+  <body>
+
+    <div class="container">
+
+      <form class="form-signin" method="POST" action="/login">
+        <h2 class="form-signin-heading">Inloggen</h2>
+        <label for="inputName" class="sr-only">Gebruikersnaam</label>
+        <input type="text" id="inputName" name="inputName" class="form-control" placeholder="Gebruikersnaam" required autofocus>
+        <label for="inputPassword" class="sr-only">Wachtwoord</label>
+        <input type="password" id="inputPassword" name="inputPassword" class="form-control" placeholder="Password" required>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+      </form>
+
+    </div> 
+
+  </body>
+</html>
