@@ -51,10 +51,10 @@ app.use('/api/login', login);
 app.use('/api/weekstaat', weekstaat);
 
 app.locals.connection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "root",
-  database: "deroef"
+  host: "databases.aii.avans.nl",
+  user: "bpzee",
+  password: "Ab12345",
+  database: "bpzee_db2"
 });
 
 app.locals.connection.connect(function(err){
