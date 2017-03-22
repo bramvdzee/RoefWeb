@@ -5,8 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>De Roef</title>
+    <script type="text/javascript" src="javascripts/datatables.min.js"></script>
+    <script type="text/javascript" src="javascripts/jspdf.min.js"></script>
+    <script type="text/javascript" src="javascripts/jspdf.plugin.autotable.js"></script>
     <link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="stylesheets/bootstrap-theme.min.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/datatables.min.css">
     <link rel="stylesheet" type="text/css" href="stylesheets/roef.css">
 </head>
 <body>
@@ -22,10 +26,24 @@
           </button>
           <a class="navbar-brand" href="#">De Roef Transport</a>
         </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="/">Homepagina</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/logout">Uitloggen</a></li>
+          </ul>
+        </div>
       </div>
     </nav>
     
-    {{{body}}}
+    <div class="container">
+      <div class="management">
+        {{{body}}}
+      </div>
+    </div>
+
+    
 
 </body>
 </html>

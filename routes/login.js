@@ -12,7 +12,7 @@ router.get('/', function(req, res, next) {
     if(req.query.message == 3) msg = "U heeft een verkeerde gebruikersnaam of wachtwoord ingevuld."
   }
   
-  res.render('login', {message: msg});
+  res.render('login', {layout:false,message: msg});
 
 });
 

@@ -5,15 +5,15 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var cors = require('cors');
+var mysql = require("mysql");
 var LocalStorage = require('node-localstorage').LocalStorage;
 localStorage = new LocalStorage('./scratch');
 
-var cors = require('cors');
-
-var mysql = require("mysql");
-
 var index = require('./routes/index');
 var webLogin = require("./routes/login");
+var webLogout = require("./routes/logout");
+var webDagstaat = require('./routes/beheer/dagstaat');
 
 var medewerker = require('./routes/api/medewerker');
 var dagstaat = require('./routes/api/dagstaat');
@@ -25,8 +25,6 @@ var login = require('./routes/api/login');
 var weekstaat = require('./routes/api/weekstaat');
 
 var app = express();
-
-
 
 // view engine setup
 app.engine('.hbs', exphbs({extname: '.hbs', defaultLayout: 'main'}));
@@ -45,6 +43,9 @@ app.use(cors({origin: '*'}));
 
 app.use('/', index);
 app.use('/login', webLogin);
+app.use('/logout', webLogout);
+app.use('/dagstaat', webDagstaat);
+
 app.use('/api/medewerker', medewerker);
 app.use('/api/dagstaat', dagstaat);
 app.use('/api/kenteken', kenteken);
@@ -85,7 +86,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error', {layout: false});
+  res.redirect("/");
 });
 
 module.exports = app;

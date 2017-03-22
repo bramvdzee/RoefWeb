@@ -8,10 +8,13 @@ router.get('/', auth.requireLoggedin, function(req, res, next) {
   var storage = req.app.locals.storage;
 
   if(storage.getItem("rolnaam") == null || storage.getItem("rolnaam") != "Beheerder")
-    return res.status(500);
+  {
+    storage.setItem("authToken", "");
+    return res.redirect("login");
+  }
 
   res.render('index');
-  
+
 });
 
 module.exports = router;
