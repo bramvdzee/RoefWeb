@@ -11,3 +11,7 @@ tr.spaceUnder > td
 {
   padding-bottom: 1em;
 }
+
+.tab-content .active {
+  padding: 10px;
+}

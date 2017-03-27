@@ -1,14 +1,15 @@
 .pdf_container
 {
+    position:absolute;
     font-size: 15px;
   padding-top:10px;
-  margin:auto;
   width:1122px;
   height:794px;
 }
 
 .dagstaat_first_layer
 {
+    position:relative;
     margin:auto;
     height:79px;
     width:1052px;
@@ -17,6 +18,7 @@
 
 .dagstaat_second_layer
 {
+    position:relative;
     margin:auto;
     height:130px;
     width:1052px;
@@ -25,6 +27,7 @@
 
 .dagstaat_third_layer
 {
+    position:relative;
     text-align:center;
     margin:auto;
     width:1052px;
@@ -32,12 +35,14 @@
 }
 .dagstaat_fourth_layer
 {
+    position:relative;
     margin:auto;
     width:1052px;
 }
 
 .dagstaat_fourth_layer
 {
+    position:relative;
     margin:auto;
     height:70px;
     width:1052px;
@@ -46,6 +51,7 @@
 
 .dagstaat_fifth_layer
 {
+    position:relative;
     margin:auto;
     width:1052px;
     height:150px;
@@ -54,9 +60,11 @@
 
 .dagstaat_sixth_layer
 {
-    position:fixed;
+
+    position:absolute;
     bottom:0;
     right:0;
+    font-size:12px;
 }
 
 .dagstaat_top_input

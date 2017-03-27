@@ -26,8 +26,24 @@ var weekstaat = require('./routes/api/weekstaat');
 
 var app = express();
 
+var hbs = exphbs.create({
+  defaultLayout: 'main',
+  extname: '.hbs',
+  helpers:
+  {
+    ifEq: function(v1, v2, options)
+    {
+      if(v1 === v2) {
+        return options.fn(this);
+      }
+      return options.inverse(this);
+    }
+  }
+
+});
+
 // view engine setup
-app.engine('.hbs', exphbs({extname: '.hbs', defaultLayout: 'main'}));
+app.engine('.hbs', hbs.engine);
 app.set('view engine', '.hbs');
 
 // uncomment after placing your favicon in /public
@@ -39,7 +55,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(cors({origin: '*'}));
-
 
 app.use('/', index);
 app.use('/login', webLogin);
@@ -86,7 +101,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.redirect("/");
+  res.render(err.message);
 });
 
 module.exports = app;
