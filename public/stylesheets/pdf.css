@@ -1,27 +1,20 @@
-body
-{
-    
-    
-    
-}
-
 .pdf_container
 {
 
     position:relative;
     border: 0px;
+    padding:0px;
     font-size: 15px;
-    padding:10px;
-     width:calc(210mm * 1.25);
-    height:calc(297mm * 1.25);
+    height:calc(210mm * 1);
+    width:calc(297mm * 1);
 }
 
 .dagstaat_first_layer
 {
     position:relative;
     margin:auto;
-    height:79px;
-    width:1052px;
+    height:calc(18mm * 1);
+    width:calc(290mm * 1);
     margin-bottom:5px;
 }
 
@@ -29,8 +22,8 @@ body
 {
     position:relative;
     margin:auto;
-    height:130px;
-    width:1052px;
+    height:calc(20mm * 1);
+    width:calc(290mm * 1);
     margin-bottom:5px;
 }
 
@@ -39,22 +32,22 @@ body
     position:relative;
     text-align:center;
     margin:auto;
-    width:1052px;
+    width:calc(290mm * 1);
     margin-bottom:5px;
 }
 .dagstaat_fourth_layer
 {
     position:relative;
     margin:auto;
-    width:1052px;
+    width:calc(290mm * 1);
 }
 
 .dagstaat_fourth_layer
 {
     position:relative;
     margin:auto;
-    height:70px;
-    width:1052px;
+    height:calc(20mm * 1);
+    width:calc(290mm * 1);
     margin-bottom:5px;
 }
 
@@ -62,8 +55,8 @@ body
 {
     position:relative;
     margin:auto;
-    width:1052px;
-    height:150px;
+    height:calc(20mm * 1);
+    width:calc(290mm * 1);
     margin-bottom:5px;
 }
 
