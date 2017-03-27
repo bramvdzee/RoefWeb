@@ -10,9 +10,9 @@ module.exports = {
 
         var pageSize = "A4",
         pageOrientation = "Landscape",
-        dpi = 150, //from experimenting with different combinations of viewportSize and paperSize the pixels per inch comes out to be 150
-        pdfViewportWidth = 1920,
-        pdfViewportHeight = 1080,
+        dpi = 300, //from experimenting with different combinations of viewportSize and paperSize the pixels per inch comes out to be 150
+        pdfViewportWidth = 3508,
+        pdfViewportHeight = 2480,
         cmToInchFactor = 0.393701,
         widthInInches,
         heightInInches,
