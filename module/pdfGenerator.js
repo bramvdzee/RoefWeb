@@ -10,8 +10,9 @@ module.exports = {
 
         phantom.create().then(function(ph) {
             ph.createPage().then(function(page) {
-                page.property('viewportSize', {width: 1122 ,height: 800 }  );
-                page.property('paperSize', {format: 'A4', orientation: 'landscape'});
+                page.property('viewportSize', {width: 1122 ,height: 794 }  );
+                page.zoomFactor = 1;
+                page.property('paperSize', {format:'a4', orientation: 'landscape'});
                 page.open(req.protocol + "://" + req.get("host") + "/dagstaat/" + id + "/pdf").then(function(status) {
                     page.render(fileName).then(function() {
                         res.download(fileName, fileName, function(err){

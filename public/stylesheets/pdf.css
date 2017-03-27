@@ -1,5 +1,11 @@
+body
+{
+    zoom: 1;
+}
+
 .pdf_container
 {
+
     position:absolute;
     font-size: 15px;
   padding-top:10px;
