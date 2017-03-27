@@ -12,7 +12,7 @@ module.exports = {
             ph.createPage().then(function(page) {
                 page.property('viewportSize', {width: 1122 ,height: 800 }  );
                 page.property('paperSize', {format: 'A4', orientation: 'landscape'});
-                page.open("http://localhost:3000/dagstaat/" + id + "/pdf").then(function(status) {
+                page.open(req.protocol + "://" + req.get("host") + "/dagstaat/" + id + "/pdf").then(function(status) {
                     page.render(fileName).then(function() {
                         res.download(fileName, fileName, function(err){
                             if (err) {
