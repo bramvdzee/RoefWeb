@@ -211,8 +211,6 @@ module.exports = {
                 {
                     fs.unlink(fileName, (err) => {
                         if(err) console.log(err);
-                        else 
-                            return res.redirect("/dagstaat");
                     });
                 }
 
