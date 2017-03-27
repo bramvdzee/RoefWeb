@@ -1,16 +1,19 @@
 body
 {
-    zoom: 1;
+    
+    
+    
 }
 
 .pdf_container
 {
 
-    position:absolute;
+    position:relative;
+    border: 0px;
     font-size: 15px;
-  padding-top:10px;
-  width:1122px;
-  height:794px;
+    padding:10px;
+     width:calc(210mm * 1.25);
+    height:calc(297mm * 1.25);
 }
 
 .dagstaat_first_layer
