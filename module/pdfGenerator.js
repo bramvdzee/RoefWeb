@@ -196,9 +196,6 @@ module.exports = {
                     }
                 }
             };
-    
-
-
 
         var pdfDoc = printer.createPdfKitDocument(dd);
         pdfDoc.pipe(fs.createWriteStream(fileName)).on('finish',function(){

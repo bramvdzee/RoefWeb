@@ -1,0 +1,33 @@
+{{#if wagen}}
+<form class="form-horizontal" method="POST" action="/wagen/{{wagen.id}}">
+{{else}}
+<form class="form-horizontal" method="POST" action="/wagen/0">
+{{/if}}
+
+    <div class="page-header">
+        <div class="pull-left">
+            {{#if wagen}}
+                <h2>{{wagen.type}}</h2>
+            {{else}}
+                <h2>Nieuwe wagen</h2>
+            {{/if}}
+        </div>
+        <div class="pull-right">
+            <div class="btn-group">
+                <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true" title="Opslaan"></span></button>
+                {{#if wagen}}
+                    <a type="button" href="/wagen/{{wagen.id}}/delete" onclick="return confirm('Weet je zeker dat je dit item wil verwijderen?')" class="btn btn-danger" title="Verwijderen"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+                {{/if}}
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="inputType">Type:</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="inputType" id="inputType" placeholder="Naam" value="{{wagen.type}}" required/>
+        </div>
+    </div>
+
+</form>

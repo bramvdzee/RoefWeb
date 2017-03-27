@@ -14,6 +14,10 @@ var index = require('./routes/index');
 var webLogin = require("./routes/login");
 var webLogout = require("./routes/logout");
 var webDagstaat = require('./routes/beheer/dagstaat');
+var webPersoneel = require('./routes/beheer/personeel');
+var webKlant = require('./routes/beheer/klant');
+var webWagen = require('./routes/beheer/wagen');
+var webKenteken = require('./routes/beheer/kenteken');
 
 var medewerker = require('./routes/api/medewerker');
 var dagstaat = require('./routes/api/dagstaat');
@@ -60,6 +64,10 @@ app.use('/', index);
 app.use('/login', webLogin);
 app.use('/logout', webLogout);
 app.use('/dagstaat', webDagstaat);
+app.use('/personeel', webPersoneel);
+app.use('/klant', webKlant);
+app.use('/wagen', webWagen);
+app.use('/kenteken', webKenteken);
 
 app.use('/api/medewerker', medewerker);
 app.use('/api/dagstaat', dagstaat);
