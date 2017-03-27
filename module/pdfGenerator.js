@@ -70,7 +70,7 @@ module.exports = {
                             fit: [182,63]                     
                         },
                         {
-                            text: 'No. ' + dagstaat.id,
+                            text: 'Dagstaat No. ' + dagstaat.id,
                             style: ['right', 'regular']
                         }
                     ],
