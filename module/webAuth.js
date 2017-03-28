@@ -10,7 +10,13 @@ module.exports = {
 
         var storage = req.app.locals.storage;
         var db = req.app.locals.connection;
-        db.query("SELECT m.*, r.naam as rolnaam from medewerker AS m INNER JOIN rol AS r ON m.rol_id = r.id WHERE authToken = '" + storage.getItem("authToken") + "' LIMIT 1", function(err,rows){
+        var auth = storage.getItem("authToken");
+        if(!auth)
+        {
+            return res.redirect("login");
+        }
+        
+        db.query("SELECT m.*, r.naam as rolnaam from medewerker AS m INNER JOIN rol AS r ON m.rol_id = r.id WHERE authToken = '" + auth + "' LIMIT 1", function(err,rows){
             if(err) throw err;
 
             if(rows.length != 1)

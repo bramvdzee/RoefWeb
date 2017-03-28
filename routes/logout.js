@@ -5,9 +5,9 @@ var router = express.Router();
 router.get('/', function(req, res, next) {
   
     var storage = req.app.locals.storage;
-    storage.setItem("rolnaam", "");
-    storage.setItem("authToken", "");
-  
+    storage.removeItem("rolnaam");
+    storage.removeItem("authToken");
+    
     return res.redirect("/");
 
 });

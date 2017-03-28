@@ -8,7 +8,7 @@ var bodyParser = require('body-parser');
 var cors = require('cors');
 var mysql = require("mysql");
 var LocalStorage = require('node-localstorage').LocalStorage;
-localStorage = new LocalStorage('./scratch');
+localStorage = new LocalStorage('./roef_storage');
 
 var index = require('./routes/index');
 var webLogin = require("./routes/login");
@@ -64,6 +64,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(cors({origin: '*'}));
 
+app.use('', index);
 app.use('/', index);
 app.use('/login', webLogin);
 app.use('/logout', webLogout);
