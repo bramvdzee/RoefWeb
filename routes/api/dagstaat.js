@@ -27,10 +27,11 @@ router.post('/', auth.requireLoggedIn, auth.requireRole("Beheerder"), function(r
     var opmerking = (req.body.opmerking ? config.escape(req.body.opmerking) : "");
     var afgifte = config.escape(req.body.afgifte);
     var transporteur = config.escape(req.body.transporteur);
+    var pauze = config.escape(req.body.pauze);
     var naam_uitvoerder = config.escape(req.body.naam_uitvoerder);
     var naam_chauffeur = config.escape(req.body.naam_chauffeur);
 
-    var query = "INSERT INTO dagstaat (klant_id, kenteken_id, wagentype_id, woonplaats, datum, opmerking, afgifte, transporteur, naam_uitvoerder, naam_chauffeur) VALUES ("
+    var query = "INSERT INTO dagstaat (klant_id, kenteken_id, wagentype_id, woonplaats, datum, opmerking, afgifte, transporteur, pauze, naam_uitvoerder, naam_chauffeur) VALUES ("
     + "" + klant_id + ","
     + "" + kenteken_id + ","
     + "" + wagentype_id + ","
@@ -39,6 +40,7 @@ router.post('/', auth.requireLoggedIn, auth.requireRole("Beheerder"), function(r
     + "'" + opmerking + "',"
     + "'" + afgifte + "',"
     + "'" + transporteur + "',"
+    + "" + pauze + ", "
     + "'" + naam_uitvoerder + "',"
     + "'" + naam_chauffeur + "')";
 
@@ -102,6 +104,7 @@ router.put('/:id', auth.requireLoggedIn, auth.requireRole("Beheerder"), function
     var opmerking = (req.body.opmerking ? config.escape(req.body.opmerking) : "");
     var afgifte = config.escape(req.body.afgifte);
     var transporteur = config.escape(req.body.transporteur);
+    var pauze = config.escape(req.body.pauze);
     var naam_uitvoerder = config.escape(req.body.naam_uitvoerder);
     var naam_chauffeur = config.escape(req.body.naam_chauffeur);
 
@@ -114,6 +117,7 @@ router.put('/:id', auth.requireLoggedIn, auth.requireRole("Beheerder"), function
     + "opmerking = '" + opmerking + "',"
     + "afgifte = '" + afgifte + "',"
     + "transporteur = '" + transporteur + "',"
+    + "pauze = " + pauze + ", "
     + "naam_uitvoerder = '" + naam_uitvoerder + "',"
     + "naam_chauffeur = '" + naam_chauffeur + "'"
     + "WHERE id = " + req.params.id;
