@@ -18,6 +18,7 @@ var webPersoneel = require('./routes/beheer/personeel');
 var webKlant = require('./routes/beheer/klant');
 var webWagen = require('./routes/beheer/wagen');
 var webKenteken = require('./routes/beheer/kenteken');
+var webWeekstaat = require('./routes/beheer/weekstaat');
 
 var medewerker = require('./routes/api/medewerker');
 var dagstaat = require('./routes/api/dagstaat');
@@ -26,7 +27,6 @@ var klant = require('./routes/api/klant');
 var rol = require('./routes/api/rol');
 var wagentype = require('./routes/api/wagentype');
 var login = require('./routes/api/login');
-var weekstaat = require('./routes/api/weekstaat');
 
 var app = express();
 
@@ -68,6 +68,7 @@ app.use('/personeel', webPersoneel);
 app.use('/klant', webKlant);
 app.use('/wagen', webWagen);
 app.use('/kenteken', webKenteken);
+app.use('/weekstaat', webWeekstaat);
 
 app.use('/api/medewerker', medewerker);
 app.use('/api/dagstaat', dagstaat);
@@ -76,7 +77,6 @@ app.use('/api/klant', klant);
 app.use('/api/rol', rol);
 app.use('/api/wagentype', wagentype);
 app.use('/api/login', login);
-app.use('/api/weekstaat', weekstaat);
 
 app.locals.storage = localStorage;
 

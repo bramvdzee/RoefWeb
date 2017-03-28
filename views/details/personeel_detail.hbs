@@ -58,7 +58,7 @@
     <div class="form-group">
                 <label class="control-label col-sm-2" for="inputRol">Rol:</label>
                 <div class="col-sm-10">
-                <select class="form-control" name="inputRol" id="inputRol" required>
+                <select class="form-control selectpicker" name="inputRol" id="inputRol" required>
                     
                             {{#each rollen}}
                                 {{#ifEq this.id ../medewerker.rol_id}}

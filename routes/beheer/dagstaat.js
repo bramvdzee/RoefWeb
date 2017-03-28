@@ -218,7 +218,7 @@ router.get('/:id/export', auth.requireLoggedin, function(req, res, next) {
             dagstaat.dag_begin = dag_begin.substr(0,5);
             dagstaat.dag_eind = dag_eind.substr(0,5);
 
-            pdf.generateDagstaat(req, res, dagstaat);
+            pdf.generateDagstaat(res, dagstaat);
 
         });
 

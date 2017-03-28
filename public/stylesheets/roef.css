@@ -2,11 +2,6 @@ body{
     padding-top:50px;
 }
 
-.management {
-  padding: 40px 15px;
-  text-align: left;
-}
-
 tr.spaceUnder > td
 {
   padding-bottom: 1em;

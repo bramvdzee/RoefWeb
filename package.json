@@ -8,6 +8,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "~1.15.2",
+    "bootstrap-select": "^1.12.2",
     "cookie-parser": "~1.4.3",
     "crypto": "0.0.3",
     "debug": "~2.2.0",

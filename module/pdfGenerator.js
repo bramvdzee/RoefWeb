@@ -3,23 +3,21 @@ var fs = require('fs');
 
 module.exports = {
 
-    generateDagstaat: function(req, res, dagstaat)
+    fonts: {
+        Roboto: {
+            normal: './public/fonts/Roboto-Regular.ttf',
+            bold: './public/fonts/Roboto-Medium.ttf',
+            italics: './public/fonts/Roboto-Italic.ttf',
+            bolditalics: './public/fonts/Roboto-Italic.ttf'
+        }
+    },
+
+    generateDagstaat: function(res, dagstaat)
     {
 
         var fileName = "Dagstaat_" + dagstaat.id + ".pdf";
 
-        fonts = {
-                Roboto: {
-                    normal: './public/fonts/Roboto-Regular.ttf',
-                    bold: './public/fonts/Roboto-Medium.ttf',
-                    italics: './public/fonts/Roboto-Italic.ttf',
-                    bolditalics: './public/fonts/Roboto-Italic.ttf'
-                }
-            };
-
-
-        var PdfPrinter = require('pdfmake/src/printer');
-        var printer = new PdfPrinter(fonts);
+        var printer = new PdfPrinter(this.fonts);
 
         var body = [];
         body.push(
@@ -81,7 +79,7 @@ module.exports = {
                     columns:
                     [
                         {
-                            text: 'Het Schild 18 \n5275 EB Den Dungen \nTel  (073) 594 10 04 \nFax  (073) 851 44 08 \nMob. Tel. 06 - 22 80 26 96 \nEmail administratie@vofderoef.nl',
+                            text: 'Het Schild 18 \n5275 EB Den Dungen \nTel  (073) 594 10 04 \nMob. Tel. 06 - 22 80 26 96 \nEmail administratie@vofderoef.nl',
                             width: '30%',
                             style: 'regular'
                         },
@@ -117,14 +115,19 @@ module.exports = {
                     ]
                 },
                 {
+                    text:
+                    [
+                                {text: "Werkbonnen afgegeven aan: ", style: ['regular','bold']},
+                                {text: dagstaat.afgifte + "\n", style: 'regular'},
+                    ],
+                },
+                {
                     margin: [0,0,0,20],
                     columns:
                     [
                         {
                             text:
                             [
-                                {text: "Werkbonnen afgegeven aan: ", style: ['regular','bold']},
-                                {text: dagstaat.afgifte + "\n", style: 'regular'},
                                 {text: "Transporteur: ", style: ['regular','bold']},
                                 {text: dagstaat.transporteur + "\n", style: 'regular'},
                                 {text: "Kenteken: ", style: ['regular','bold']},
@@ -163,19 +166,10 @@ module.exports = {
                     ]
                 },
                 {
-                    columns:
-                    [
-                        {
-                            text: '',
-                            width: '33%',
-                            style: 'regular',
-                        },
-                        {
+                    
                             text: 'Inschrijfnummer Kamer van Koophandel Oost-Brabant 160.48.725  |  Wij rijden onder A.V.C./CMR condities.',
-                            width: '*',
-                            style: 'smaller'
-                        }
-                    ]
+                            width: 'auto',
+                            style: 'smaller',
                 }
                 
                 ],
@@ -193,9 +187,132 @@ module.exports = {
                     smaller:
                     {
                         fontSize: 10,
+                        alignment: 'center'
                     }
-                }
-            };
+            }
+        };
+
+        this.downloadPdf(res, fileName, dd, printer);
+
+        
+
+    },
+
+    generateWeekstaat: function(res, week, jaar, dagstaten)
+    {
+
+        var weekstaatId = dagstaten[0].klant_id + "" + week + "" + jaar;
+        var fileName = "Weekstaat_" + weekstaatId + ".pdf";
+        var printer = new PdfPrinter(this.fonts);
+
+        var data = [];
+
+        for(var i = 0; i < dagstaten.length; i++)
+        {
+            var dagstaat = dagstaten[i];
+
+            if(!data[dagstaat.datum])
+                data[dagstaat.datum] = [];
+
+            data[dagstaat.datum].push(dagstaat);
+
+        }
+
+        var body = [];
+        body.push([{text: 'Datum', style: 'tableHeader'}, {text: 'Dagstaat ID', style: 'tableHeader'}, {text: 'Wagentype', style: 'tableHeader'}, {text: 'Totaal uren', style: 'tableHeader'}]);
+
+        Object.keys(data).forEach(function (key) {
+
+            var datum = key;
+            var realDatum = new Date(datum);
+            var m = (parseInt(realDatum.getMonth()) + 1);
+            var date = (realDatum.getDate() < 10 ? "0" + realDatum.getDate() : realDatum.getDate());
+            var month = (m < 10 ? "0" + m : m);
+            var year = realDatum.getFullYear();
+
+            body.push([{text: date + "/" + month + "/" + year}, '','','']);
+
+
+            for(var i = 0; i < data[datum].length; i++)
+            {
+                var dagstaat = data[datum][i];
+
+                body.push([
+                    '', 
+                    {text: dagstaat.id},
+                    {text: dagstaat.wagentype},
+                    {text: dagstaat.dag_totaal + ""}
+                ]);
+            }
+
+            body.push(['\n','\n','\n','\n']);
+
+
+        });
+        
+
+        var dd = {
+            pageSize: 'A4',
+            pageOrientation: 'portrait',
+
+            header: 
+            {
+
+                columns:
+                [
+                    {
+                        width:'50%',
+                        alignment: 'left',
+                        margin: [40,10],
+                        image: './public/images/dagstaat_logo.jpg',
+                        fit: [182,63]    
+                    },
+                    {
+                        width:'50%',
+                        text: 
+                        [
+                            {text: 'Weekstaat No. ' + weekstaatId + '\n\n', style: 'header'},
+                            {text: 'Opdrachtgever: ' + dagstaten[0].klant_naam + '\n\n', style: 'header'},
+                            {text: 'Week: ' + week + '/' + jaar, style: 'header'},
+                        ],
+                        alignment: 'right',
+                        margin: [40,10],
+                    }
+                ]
+            },
+
+            content: {
+                margin: [0,20,0,0],
+                table: {
+                    headerRows: 1,
+                    widths: ['40%', '20%', '20%', '20%'],
+                    body: body
+                },
+                layout: 'noBorders'
+            },
+            styles:
+            {
+                header: {
+                    fontSize: 11,
+                },
+                tableHeader: {
+                    bold:true,
+                    fillColor: '#B0D1FF',
+                },
+                bold: {
+                    bold:true,
+                },
+            },
+            pageMargins: [40, 80, 40, 60]
+               
+        };
+
+        this.downloadPdf(res, fileName, dd, printer);
+
+    },
+
+    downloadPdf: function(res, fileName, dd, printer)
+    {
 
         var pdfDoc = printer.createPdfKitDocument(dd);
         pdfDoc.pipe(fs.createWriteStream(fileName)).on('finish',function(){
@@ -216,8 +333,8 @@ module.exports = {
         });
         pdfDoc.end();
 
-        
-
     }
+
+
 
 };
