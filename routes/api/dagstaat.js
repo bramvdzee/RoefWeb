@@ -27,7 +27,7 @@ router.post('/', auth.requireLoggedIn, auth.requireRole("Beheerder"), function(r
     var opmerking = (req.body.opmerking ? config.escape(req.body.opmerking) : "");
     var afgifte = config.escape(req.body.afgifte);
     var transporteur = config.escape(req.body.transporteur);
-    var pauze = config.escape(req.body.pauze);
+    var pauze = req.body.pauze;
     var naam_uitvoerder = config.escape(req.body.naam_uitvoerder);
     var naam_chauffeur = config.escape(req.body.naam_chauffeur);
 
