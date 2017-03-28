@@ -23,12 +23,22 @@ router.get('/:id', auth.requireLoggedin, function(req, res, next) {
      db.query('SELECT * FROM dagstaat WHERE id=' + req.params.id ,function(err,rows){
 
         if(err) throw err;
+        
         var dagstaat = rows[0];
+
+        
 
          db.query('SELECT * FROM dagstaat_rit WHERE dagstaat_id=' + req.params.id ,function(err,rows){
             if(err) throw err;
 
-            dagstaat.ritten = rows;
+
+            var ritten;
+            if(dagstaat) 
+                ritten = rows;
+            else 
+                ritten = [];
+
+            
 
             db.query('SELECT * FROM klant',function(err,rows){
                 if(err) throw err;
@@ -49,12 +59,16 @@ router.get('/:id', auth.requireLoggedin, function(req, res, next) {
                         
                             var wagens = rows;
 
-                            var date = new Date(dagstaat.datum);
-                            var monthInt = (parseInt(date.getMonth())+1);
-                            var month = (monthInt < 10 ? "0" + monthInt : monthInt);
-                            dagstaat.datum = date.getFullYear() + "-" + month + "-" + date.getDate();
+                            if(dagstaat)
+                            {
+                                var date = new Date(dagstaat.datum);
+                                var monthInt = (parseInt(date.getMonth())+1);
+                                var month = (monthInt < 10 ? "0" + monthInt : monthInt);
+                                dagstaat.datum = date.getFullYear() + "-" + month + "-" + date.getDate();
+                            }
+                            
 
-                            return res.render('details/dagstaat_detail', {dagstaat: dagstaat, klanten: klanten, kentekens: kentekens, wagens: wagens});
+                            return res.render('details/dagstaat_detail', {dagstaat: dagstaat, ritten: ritten, klanten: klanten, kentekens: kentekens, wagens: wagens});
 
                         });
 
@@ -70,13 +84,15 @@ router.get('/:id', auth.requireLoggedin, function(req, res, next) {
 
 });
 
+
+
 router.post("/:id", auth.requireLoggedin, function(req, res, next)
 {
 
     var db = req.app.locals.connection;
 
     //dagstaat
-    var id = req.body.inputId;
+    var id = req.params.id;
     var klant_id = req.body.inputKlant;
     var woonplaats = req.body.inputWoonplaats;
     var datum = req.body.inputDatum;
@@ -85,10 +101,30 @@ router.post("/:id", auth.requireLoggedin, function(req, res, next)
     var kenteken_id = req.body.inputKenteken;
     var wagentype_id = req.body.inputWagen;
     var opmerking = req.body.inputOpmerking;
+    var pauze = req.body.inputPauze;
     var naam_uitvoerder = req.body.inputNaamUitvoerder;
     var naam_chauffeur = req.body.inputNaamChauffeur;
 
-    var query = "UPDATE dagstaat SET " 
+    var query;
+    
+    if(id == 0)
+    {
+        query = "INSERT INTO dagstaat (klant_id, kenteken_id, wagentype_id, woonplaats, datum, opmerking, afgifte, transporteur, pauze, naam_uitvoerder, naam_chauffeur) VALUES ("
+            + "" + klant_id + ", "
+            + "" + kenteken_id + ", "
+            + "" + wagentype_id + ", "
+            + "'" + woonplaats + "', "
+            + "'" + datum + "', "
+            + "'" + opmerking + "', "
+            + "'" + afgifte + "', "
+            + "'" + transporteur + "', "
+            + "" + pauze + ", "
+            + "'" + naam_uitvoerder + "', "
+            + "'" + naam_chauffeur + "');";
+    } 
+    else
+    {
+        query = "UPDATE dagstaat SET " 
             + "klant_id = " + klant_id + ", "
             + "kenteken_id = " + kenteken_id + ", "
             + "wagentype_id = " + wagentype_id + ", "
@@ -97,53 +133,60 @@ router.post("/:id", auth.requireLoggedin, function(req, res, next)
             + "opmerking = '" + opmerking + "', "
             + "afgifte = '" + afgifte + "', "
             + "transporteur = '" + transporteur + "', "
+            + "pauze = " + pauze + ", "
             + "naam_uitvoerder = '" + naam_uitvoerder + "', "
             + "naam_chauffeur = '" + naam_chauffeur + "' "
             + "WHERE id = " + id + ";";
-
-    var ritten = parseInt(req.body.inputRitten);
-    var ritQuery = "INSERT INTO dagstaat_rit (id, dagstaat_id, opdrachtgever, laadplaats, laadplaats_aankomst, laadplaats_vertrek, losplaats, losplaats_aankomst, losplaats_vertrek, lading, hoeveelheid) VALUES ";
-
-    for(var i = 0; i < ritten; i++)
-    {
-        var rit_id = i+1;
-        var rit_opdrachtgever = req.body["inputOpdrachtgever_" + rit_id];
-        var rit_laadplaats = req.body["inputLaadplaats_" + rit_id];
-        var rit_laadplaats_aankomst = req.body["inputLaadplaatsAankomst_" + rit_id];
-        var rit_laadplaats_vertrek = req.body["inputLaadplaatsVertrek_" + rit_id];
-        var rit_losplaats = req.body["inputLosplaats_" + rit_id];
-        var rit_losplaats_aankomst = req.body["inputLosplaatsAankomst_" + rit_id];
-        var rit_losplaats_vertrek = req.body["inputLosplaatsVertrek_" + rit_id];
-        var rit_lading = req.body["inputLading_" + rit_id];
-        var rit_hoeveelheid = req.body["inputHoeveelheid_" + rit_id];
-
-        if(rit_id > 1)
-            ritQuery += ", ";
-
-        ritQuery += "("
-                + "" + rit_id + ", "
-                + "" + id + ", "
-                + "'" + rit_opdrachtgever + "', "
-                + "'" + rit_laadplaats + "', "
-                + "'" + rit_laadplaats_aankomst + "', "
-                + "'" + rit_laadplaats_vertrek + "', "
-                + "'" + rit_losplaats + "', "
-                + "'" + rit_losplaats_aankomst + "', "
-                + "'" + rit_losplaats_vertrek + "', "
-                + "'" + rit_lading + "', "
-                + "" + rit_hoeveelheid + ")";
     }
-
-    ritQuery += ";";
 
     db.query(query,function(err,rows){
     
         if(err) throw err;
 
+        if(id == 0)
+            id = rows.insertId;
+
         db.query("DELETE FROM dagstaat_rit WHERE dagstaat_id = " + id, function(err, rows)
         {
 
             if(err) throw err;
+
+            var ritten = parseInt(req.body.inputRitten);
+            var ritQuery = "INSERT INTO dagstaat_rit (id, dagstaat_id, opdrachtgever, laadplaats, laadplaats_aankomst, laadplaats_vertrek, losplaats, losplaats_aankomst, losplaats_vertrek, lading, hoeveelheid) VALUES ";
+
+            console.log(ritten);
+
+            for(var i = 0; i < ritten; i++)
+            {
+                var rit_id = i+1;
+                var rit_opdrachtgever = req.body["inputOpdrachtgever_" + rit_id];
+                var rit_laadplaats = req.body["inputLaadplaats_" + rit_id];
+                var rit_laadplaats_aankomst = req.body["inputLaadplaatsAankomst_" + rit_id];
+                var rit_laadplaats_vertrek = req.body["inputLaadplaatsVertrek_" + rit_id];
+                var rit_losplaats = req.body["inputLosplaats_" + rit_id];
+                var rit_losplaats_aankomst = req.body["inputLosplaatsAankomst_" + rit_id];
+                var rit_losplaats_vertrek = req.body["inputLosplaatsVertrek_" + rit_id];
+                var rit_lading = req.body["inputLading_" + rit_id];
+                var rit_hoeveelheid = req.body["inputHoeveelheid_" + rit_id];
+
+                if(rit_id > 1)
+                    ritQuery += ", ";
+
+                ritQuery += "("
+                        + "" + rit_id + ", "
+                        + "" + id + ", "
+                        + "'" + rit_opdrachtgever + "', "
+                        + "'" + rit_laadplaats + "', "
+                        + "'" + rit_laadplaats_aankomst + "', "
+                        + "'" + rit_laadplaats_vertrek + "', "
+                        + "'" + rit_losplaats + "', "
+                        + "'" + rit_losplaats_aankomst + "', "
+                        + "'" + rit_losplaats_vertrek + "', "
+                        + "'" + rit_lading + "', "
+                        + "" + rit_hoeveelheid + ")";
+            }
+
+            ritQuery += ";";
 
 
             db.query(ritQuery, function(err, rows)

@@ -80,22 +80,12 @@ router.post('/', auth.requireLoggedin, function(req, res, next) {
             dagstaat.dag_totaal = "00:00";
           }
       });
-
-      
-
       
       pdf.generateWeekstaat(res, week, jaar, dagstaten);
-      
-
-      
-
 
     }
-      
-
 
   });
-  
 
 });
 

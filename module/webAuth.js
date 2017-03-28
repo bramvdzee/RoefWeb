@@ -60,9 +60,7 @@ module.exports = {
                         
                         // Get current data in the right formate
                         var date = getCurrentDate();
-
                         
-
                         db.query("UPDATE medewerker SET authToken = '" + authToken + "', token_exp = '" + date + "' WHERE id = " + user.id + "", function(err, rows)
                         {
 

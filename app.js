@@ -41,6 +41,10 @@ var hbs = exphbs.create({
         return options.fn(this);
       }
       return options.inverse(this);
+    },
+
+    toJSON: function(obj) {
+      return JSON.stringify(obj);
     }
   }
 

@@ -1,14 +1,24 @@
-<form class="form-horizontal" method="POST" action="/dagstaat/{{dagstaat.id}}">
+{{#if dagstaat}}
+<form class="form-horizontal" data-toggle="validator" role="form" method="POST" action="/dagstaat/{{dagstaat.id}}">
+{{else}}
+<form class="form-horizontal" data-toggle="validator" role="form" method="POST" action="/dagstaat/0">
+{{/if}}
 
     <div class="page-header">
         <div class="pull-left">
-            <h2>Dagstaat No. {{dagstaat.id}}</h2>
+            {{#if dagstaat.id}}
+                <h2>Dagstaat No. {{dagstaat.id}}</h2>
+            {{else}}
+                <h2>Nieuwe dagstaat</h2>
+            {{/if}}
         </div>
         <div class="pull-right">
             <div class="btn-group">
                 <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span></button>
-                <a type="button" href="/dagstaat/{{dagstaat.id}}/export" class="btn btn-primary"><span class="glyphicon glyphicon-export" aria-hidden="true"></span></a>
-                <a type="button" href="/dagstaat/{{dagstaat.id}}/delete" onclick="return confirm('Weet je zeker dat je dit item wil verwijderen?')" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+                {{#if dagstaat.id}}
+                    <a type="button" href="/dagstaat/{{dagstaat.id}}/export" class="btn btn-primary"><span class="glyphicon glyphicon-export" aria-hidden="true"></span></a>
+                    <a type="button" href="/dagstaat/{{dagstaat.id}}/delete" onclick="return confirm('Weet je zeker dat je dit item wil verwijderen?')" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+                {{/if}}
             </div>
         </div>
         <div class="clearfix"></div>
@@ -19,8 +29,6 @@
     <li class="active"><a data-toggle="tab" href="#dagstaat">Dagstaat</a></li>
     <li><a data-toggle="tab" href="#ritten">Ritten</a></li>
 </ul>
-
-    <input type="hidden" name="inputId" value="{{dagstaat.id}}"/>
 
     <div class="tab-content">
         <div id="dagstaat" class="tab-pane fade in active">
@@ -109,6 +117,13 @@
             </div>
 
             <div class="form-group">
+                <label class="control-label col-sm-2" for="inputPauze">Pauze:</label>
+                <div class="col-sm-10">
+                <input type="number" class="form-control" name="inputPauze" id="inputPauze" placeholder="Pauze" value="{{dagstaat.pauze}}"/>
+                </div>
+            </div>
+
+            <div class="form-group">
                 <label class="control-label col-sm-2" for="inputNaamUitvoerder">Naam uitvoerder:</label>
                 <div class="col-sm-10">
                 <input type="text" class="form-control" name="inputNaamUitvoerder" id="inputNaamUitvoerder" placeholder="Naam uitvoerder" value="{{dagstaat.naam_uitvoerder}}" required/>
@@ -128,93 +143,195 @@
         </div>
         <div id="ritten" class="tab-pane fade">
         
-            <input type="hidden" name="inputRitten" value="{{dagstaat.ritten.length}}"/>
+            <input type="hidden" id="inputRitten" name="inputRitten" value="{{dagstaat.ritten.length}}"/>
             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 
-                {{#each dagstaat.ritten}}
+            <!-- JQuery handelt ritten af! -->    
 
-                    <div class="panel panel-default">
-                        <div class="panel-heading" role="tab" id="heading_{{this.id}}">
-                        <h4 class="panel-title">
-                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse_{{this.id}}" aria-expanded="false" aria-controls="collapse_{{this.id}}">
-                                Rit {{this.id}}
-                            </a>
-                        </h4>
-                        </div>
-                        <div id="collapse_{{this.id}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_{{this.id}}">
-                        <div class="panel-body">
-                            
-                            <div class="form-group">
-                                <label class="control-label col-sm-2" for="inputOpdrachtgever_{{this.id}}">Opdrachtgever:</label>
-                                <div class="col-sm-10">
-                                <input type="text" name="inputOpdrachtgever_{{this.id}}" class="form-control" id="inputOpdrachtgever_{{this.id}}" placeholder="Opdrachtgever" value="{{this.opdrachtgever}}" required/>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="control-label col-sm-2" for="inputLaadplaats_{{this.id}}">Laadplaats:</label>
-                                <div class="col-sm-10">
-                                <input type="text" class="form-control" name="inputLaadplaats_{{this.id}}" id="inputLaadplaats_{{this.id}}" placeholder="Laadplaats" value="{{this.laadplaats}}" required/>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="control-label col-sm-2" for="inputLaadplaatsAankomst_{{this.id}}">Laadplaats aankomst:</label>
-                                <div class="col-sm-10">
-                                <input type="time" class="form-control" name="inputLaadplaatsAankomst_{{this.id}}" id="inputLaadplaatsAankomst_{{this.id}}" placeholder="Laadplaats aankomst" value="{{this.laadplaats_aankomst}}" required/>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="control-label col-sm-2" for="inputLaadplaatsVertrek_{{this.id}}">Laadplaats vertrek:</label>
-                                <div class="col-sm-10">
-                                <input type="time" class="form-control" name="inputLaadplaatsVertrek_{{this.id}}" id="inputLaadplaatsVertrek_{{this.id}}" placeholder="Laadplaats vertrek" value="{{this.laadplaats_vertrek}}" required/>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="control-label col-sm-2" for="inputLosplaats_{{this.id}}">Losplaats:</label>
-                                <div class="col-sm-10">
-                                <input type="text" class="form-control" name="inputLosplaats_{{this.id}}" id="inputLosplaats_{{this.id}}" placeholder="Losplaats" value="{{this.losplaats}}" required/>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="control-label col-sm-2" for="inputLosplaatsAankomst_{{this.id}}">Losplaats aankomst:</label>
-                                <div class="col-sm-10">
-                                <input type="time" class="form-control" name="inputLosplaatsAankomst_{{this.id}}" id="inputLosplaatsAankomst_{{this.id}}" placeholder="Losplaats aankomst" value="{{this.losplaats_aankomst}}" required/>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="control-label col-sm-2" for="inputLosplaatsVertrek_{{this.id}}">Losplaats vertrek:</label>
-                                <div class="col-sm-10">
-                                <input type="time" class="form-control" name="inputLosplaatsVertrek_{{this.id}}" id="inputLosplaatsVertrek_{{this.id}}" placeholder="Losplaats vertrek" value="{{this.losplaats_vertrek}}" required/>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="control-label col-sm-2" for="inputLading_{{this.id}}">Lading:</label>
-                                <div class="col-sm-10">
-                                <input type="text" class="form-control" name="inputLading_{{this.id}}" id="inputLading_{{this.id}}" placeholder="Lading" value="{{this.lading}}" required/>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="control-label col-sm-2" for="inputHoeveelheid_{{this.id}}">Hoeveelheid:</label>
-                                <div class="col-sm-10">
-                                <input type="number" class="form-control" name="inputHoeveelheid_{{this.id}}" id="inputHoeveelheid_{{this.id}}" placeholder="Lading" value="{{this.hoeveelheid}}" required/>
-                                </div>
-                            </div>
-
-                        </div>
-                        </div>
-                    </div>
-
-                {{/each}}
-
-        </div>
+            </div>
+            <button type="button" class="btn btn-primary btn-block" onclick="addRit()">Rit toevoegen</button>
     </div>
 
 </form>
 
+<script>
+
+var ritten = [];
+
+$(document).ready(function()
+{
+
+    $('.form-horizontal').on('submit', function (e) {
+        if (e.isDefaultPrevented()) {
+        } else {
+            e.preventDefault();
+
+            if(ritten.length == 0)
+                alert("Een dagstaat zonder ritten kan niet opgeslagen worden!");
+            else
+                $(".form-horizontal").off().submit();
+        }
+    });
+
+
+    ritten = {{{toJSON ritten}}};
+    showRitten();
+
+});
+
+function showRitten()
+{
+
+
+    $(".panel-group").empty();
+    $("#inputRitten").attr("value", ritten.length);
+
+    ritten.forEach(function(rit){
+
+        var names = 
+        ["inputOpdrachtgever_" + rit.id,
+        "inputLaadplaats_" + rit.id,
+        "inputLaadplaatsAankomst_" + rit.id,
+        "inputLaadplaatsVertrek_" + rit.id,
+        "inputLosplaats_" + rit.id,
+        "inputLosplaatsAankomst_" + rit.id,
+        "inputLosplaatsVertrek_" + rit.id,
+        "inputLading_" + rit.id,
+        "inputHoeveelheid_" + rit.id
+        ];
+
+        var types = 
+        ["text",
+        "text",
+        "time",
+        "time",
+        "text",
+        "time",
+        "time",
+        "text",
+        "number"
+        ];
+
+        var placeholders = 
+        ["Opdrachtgever",
+        "Laadplaats",
+        "Laadplaats aankomst",
+        "Laadplaats vertrek",
+        "Losplaats",
+        "Losplaats aankomst",
+        "Losplaats vertrek",
+        "Lading",
+        "Hoeveelheid"
+        ];
+
+        var values =
+        [rit.opdrachtgever,
+        rit.laadplaats,
+        rit.laadplaats_aankomst,
+        rit.laadplaats_vertrek,
+        rit.losplaats,
+        rit.losplaats_aankomst,
+        rit.losplaats_vertrek,
+        rit.lading,
+        rit.hoeveelheid
+        ];
+
+        var mainDiv = $("<div />").addClass("panel panel-default");
+        var heading = $("<div />").addClass("panel-heading").attr("role", "tab").attr("id", "heading_" + rit.id);
+        var title = $("<h4/>").addClass("panel-title");
+        var headingButton = $("<a />").attr("role", "button").attr("data-toggle", "collapse").attr("data-parent", "#accordion").attr("href", "#collapse_" + rit.id).attr("aria-expanded", "false").attr("aria-controls", "collapse_" + rit.id);
+        headingButton.append("Rit " + rit.id);
+        title.append(headingButton);
+        heading.append(title);
+        mainDiv.append(heading);
+
+        var collapsable = $("<div />").attr("id", "collapse_" + rit.id).addClass("panel-collapse collapse").attr("role", "tabpanel").attr("aria-labelledby", "heading_" + rit.id);
+        var body = $("<div />").addClass("panel-body");
+
+        for(var i = 0; i < names.length; i++)
+        {
+            var type = types[i];
+            var name = names[i];
+            var placeholder = placeholders[i];
+            var value = values[i];
+
+            var formGroup = $("<div />").addClass("form-group");
+            var label = $("<label />").addClass("control-label col-sm-2").attr("for", name).append(placeholder + ":");
+            var column = $("<div />").addClass("col-sm-10");
+            var input = $("<input />").attr("type", type).addClass("form-control").attr("name", name).attr("id", name).attr("placeholder", placeholder).attr("value", value).prop("required", true);
+
+            column.append(input);
+            formGroup.append(label);
+            formGroup.append(column);
+            body.append(formGroup);
+
+        }
+
+        var del = $("<button />").attr("type", "button").addClass("btn btn-danger btn-block").append("Verwijder rit");
+        del.on("click",function()
+        {
+            removeRit(rit.id);
+        });
+        body.append(del);
+
+        collapsable.append(body);
+        mainDiv.append(collapsable);
+
+        $(".panel-group").append(mainDiv);
+
+    });
+
+}
+
+function addRit() 
+{
+    ritten.push({});
+    ritten[ritten.length-1].id = ritten.length;
+
+    if(ritten.length > 1)
+    {
+        ritten[ritten.length-1].opdrachtgever = ritten[ritten.length-2].opdrachtgever;
+        ritten[ritten.length-1].laadplaats = ritten[ritten.length-2].laadplaats;
+        ritten[ritten.length-1].losplaats = ritten[ritten.length-2].losplaats;
+        ritten[ritten.length-1].lading = ritten[ritten.length-2].lading;
+    }
+
+    showRitten();
+}
+
+function removeRit(toRemove)
+{
+
+    var newData = [];
+    var id = 1;
+
+    for(var i = 0; i < ritten.length; i++)
+    {
+        var get = (i+1);
+        if(get == toRemove)
+            continue;
+
+        var rit = {id: id};
+        rit.opdrachtgever = $("#inputOpdrachtgever_" + get).attr("value");
+        rit.laadplaats = $("#inputLaadplaats_" + get).attr("value");
+        rit.laadplaats_aankomst = $("#inputLaadplaatsAankomst_" + get).attr("value");
+        rit.laadplaats_vertrek = $("#inputLaadplaatsVertrek_" + get).attr("value");
+        rit.losplaats = $("#inputLosplaats_" + get).attr("value");
+        rit.losplaats_aankomst = $("#inputlosplaatsAankomst_" + get).attr("value");
+        rit.losplaats_vertrek = $("#inputLosplaatsVertrek_" + get).attr("value");
+        rit.lading = $("#inputLading_" + get).attr("value");
+        rit.hoeveelheid = $("#inputHoeveelheid_" + get).attr("value");
+
+        newData.push(rit);
+
+        id++;
+    }
+
+    ritten = newData;
+
+    showRitten();
+
+}
+
+
+</script>

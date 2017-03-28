@@ -240,19 +240,22 @@ module.exports = {
 
         var body = [];
         var totalBody = [];
+        var days = ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag", "Zondag"];
+
         body.push([{text: 'Datum', style: 'tableHeader'}, {text: 'Dagstaat ID', style: 'tableHeader'}, {text: 'Wagentype', style: 'tableHeader'}, {text: 'Totaal uren', style: 'tableHeader'}]);
         totalBody.push([{text: 'Totaaloverzicht', style: 'tableHeader'}, {text: '', style: 'tableHeader'}, {text: 'Wagentype', style: 'tableHeader'}, {text: 'Totaal uren', style: 'tableHeader'}]);
-
+        
         Object.keys(data).forEach(function (key) {
 
             var datum = key;
             var realDatum = new Date(datum);
+
             var m = (parseInt(realDatum.getMonth()) + 1);
             var date = (realDatum.getDate() < 10 ? "0" + realDatum.getDate() : realDatum.getDate());
             var month = (m < 10 ? "0" + m : m);
             var year = realDatum.getFullYear();
 
-            body.push([{text: date + "/" + month + "/" + year}, '','','']);
+            body.push([{text: days[realDatum.getDay() - 1] + " " + date + "/" + month + "/" + year}, '','','']);
 
 
             for(var i = 0; i < data[datum].length; i++)
@@ -263,7 +266,7 @@ module.exports = {
                     '', 
                     {text: dagstaat.id},
                     {text: dagstaat.wagentype},
-                    {text: dagstaat.dag_totaal + ""}
+                    {text: dagstaat.dag_totaal}
                 ]);
             }
 
