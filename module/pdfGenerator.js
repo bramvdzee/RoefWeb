@@ -206,6 +206,7 @@ module.exports = {
         var printer = new PdfPrinter(this.fonts);
 
         var data = [];
+        var totalData = [];
 
         for(var i = 0; i < dagstaten.length; i++)
         {
@@ -218,8 +219,29 @@ module.exports = {
 
         }
 
+        for(var i = 0; i < dagstaten.length; i++)
+        {
+            var dagstaat = dagstaten[i];
+
+            if(!totalData[dagstaat.wagentype])
+            {
+                totalData[dagstaat.wagentype] = {};
+                totalData[dagstaat.wagentype].hours = 0;
+                totalData[dagstaat.wagentype].minutes = 0;
+            }
+            
+            var hours = parseInt(dagstaat.dag_totaal.split(":")[0]);
+            var minutes = parseInt(dagstaat.dag_totaal.split(":")[1]);
+            
+            totalData[dagstaat.wagentype].hours += hours;
+            totalData[dagstaat.wagentype].minutes += minutes;
+
+        }
+
         var body = [];
+        var totalBody = [];
         body.push([{text: 'Datum', style: 'tableHeader'}, {text: 'Dagstaat ID', style: 'tableHeader'}, {text: 'Wagentype', style: 'tableHeader'}, {text: 'Totaal uren', style: 'tableHeader'}]);
+        totalBody.push([{text: 'Totaaloverzicht', style: 'tableHeader'}, {text: '', style: 'tableHeader'}, {text: 'Wagentype', style: 'tableHeader'}, {text: 'Totaal uren', style: 'tableHeader'}]);
 
         Object.keys(data).forEach(function (key) {
 
@@ -247,6 +269,15 @@ module.exports = {
 
             body.push(['\n','\n','\n','\n']);
 
+        });
+
+        Object.keys(totalData).forEach(function (key) {
+        
+            var hours = (parseInt(totalData[key].hours) < 10 ? "0" + totalData[key].hours : totalData[key].hours);
+            var minutes = (parseInt(totalData[key].minutes) < 10 ? "0" + totalData[key].minutes : totalData[key].minutes);
+
+            var row = ['', '', {text: key}, {text: hours + ":" + minutes}];
+            totalBody.push(row);
 
         });
         
@@ -271,8 +302,8 @@ module.exports = {
                         width:'50%',
                         text: 
                         [
-                            {text: 'Weekstaat No. ' + weekstaatId + '\n\n', style: 'header'},
-                            {text: 'Opdrachtgever: ' + dagstaten[0].klant_naam + '\n\n', style: 'header'},
+                            {text: '\nWeekstaat No. ' + weekstaatId + '\n\n', style: 'header'},
+                            {text: 'Opdrachtgever: ' + dagstaten[0].klant_naam + '\n', style: 'header'},
                             {text: 'Week: ' + week + '/' + jaar, style: 'header'},
                         ],
                         alignment: 'right',
@@ -281,14 +312,31 @@ module.exports = {
                 ]
             },
 
-            content: {
-                margin: [0,20,0,0],
-                table: {
-                    headerRows: 1,
-                    widths: ['40%', '20%', '20%', '20%'],
-                    body: body
+            content: 
+            [
+                {
+                    margin: [0,20,0,20],
+                    table: {
+                        headerRows: 1,
+                        widths: ['40%', '20%', '20%', '20%'],
+                        body: body
+                    },
+                    layout: 'noBorders'
+            
                 },
-                layout: 'noBorders'
+                {
+                    table: {
+                        headerRows: 1,
+                        widths: ['40%', '20%', '20%', '20%'],
+                        body: totalBody
+                    },
+                    layout: 'noBorders'
+                }
+            ],
+            footer: {
+                text: 'Inschrijfnummer Kamer van Koophandel Oost-Brabant 160.48.725  |  Wij rijden onder A.V.C./CMR condities.',
+                width: 'auto',
+                style: 'footer',
             },
             styles:
             {
@@ -302,6 +350,11 @@ module.exports = {
                 bold: {
                     bold:true,
                 },
+                footer:
+                    {
+                        fontSize: 10,
+                        alignment: 'center'
+                    }
             },
             pageMargins: [40, 80, 40, 60]
                
