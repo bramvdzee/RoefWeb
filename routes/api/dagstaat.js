@@ -94,6 +94,8 @@ router.post('/', auth.requireLoggedIn, auth.requireRole("Beheerder"), function(r
 
 router.put('/:id', auth.requireLoggedIn, auth.requireRole("Beheerder"), function(req, res, next) {
   
+    console.log(req.body);
+
     var db = req.app.locals.connection;
 
     var klant_id = req.body.klant_id;
@@ -104,7 +106,7 @@ router.put('/:id', auth.requireLoggedIn, auth.requireRole("Beheerder"), function
     var opmerking = (req.body.opmerking ? config.escape(req.body.opmerking) : "");
     var afgifte = config.escape(req.body.afgifte);
     var transporteur = config.escape(req.body.transporteur);
-    var pauze = config.escape(req.body.pauze);
+    var pauze = req.body.pauze;
     var naam_uitvoerder = config.escape(req.body.naam_uitvoerder);
     var naam_chauffeur = config.escape(req.body.naam_chauffeur);
 
@@ -136,21 +138,22 @@ router.put('/:id', auth.requireLoggedIn, auth.requireRole("Beheerder"), function
             for(var i = 0; i < req.body.ritten.length; i++)
             {
 
+                console.log(rit);
                 var rit = req.body.ritten[i];
-                var opdrachtgever = config.escape(rit.opdrachtgever);
-                var laadplaats = config.escape(rit.laadplaats);
-                var losplaats = config.escape(rit.losplaats);
-                var lading = config.escape(rit.lading);
+                var opdrachtgever = rit.opdrachtgever;
+                var laadplaats = rit.laadplaats;
+                var losplaats = rit.losplaats;
+                var lading = rit.lading;
 
                 query1 += "(" + rit.id + ","
                 + "" + req.params.id + ","
                 + "'" + opdrachtgever + "',"
                 + "'" + laadplaats + "',"
-                + "'" + toTimeStamp(rit.laadplaats_aankomst) + "',"
-                + "'" + toTimeStamp(rit.laadplaats_vertrek) + "',"
+                + "'" + rit.laadplaats_aankomst + "',"
+                + "'" + rit.laadplaats_vertrek + "',"
                 + "'" + losplaats + "',"
-                + "'" + toTimeStamp(rit.losplaats_aankomst) + "',"
-                + "'" + toTimeStamp(rit.losplaats_vertrek) + "',"
+                + "'" + rit.losplaats_aankomst + "',"
+                + "'" + rit.losplaats_vertrek + "',"
                 + "'" + lading + "',"
                 + "" + rit.hoeveelheid + ")";
 
