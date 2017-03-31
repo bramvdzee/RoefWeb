@@ -82,7 +82,7 @@
                 <select class="form-control selectpicker" name="inputKenteken" id="inputKenteken" required>
                      
                             {{#each kentekens}}
-                                {{#ifEq this.id ../dagstaat.kenteken_id}}
+                                {{#ifEq this.id ../dagstaat.wagentype_id}}
                                     <option value="{{this.id}}" selected="selected">{{this.kenteken}}</option>
                                 {{else}}
                                     <option value="{{this.id}}">{{this.kenteken}}</option>
