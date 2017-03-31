@@ -18,9 +18,20 @@ module.exports = {
         var fileName = "Dagstaat_" + dagstaat.id + ".pdf";
 
         var printer = new PdfPrinter(this.fonts);
+        
+        var tables = parseInt(dagstaat.ritten.length / 10) + 1;
 
-        var body = [];
-        body.push(
+        var content = [];
+
+        var counter = 0;
+
+        for(var t = 0; t < tables; t++)
+        {
+
+            var obj = {};
+
+            var body = [];
+            body.push(
             [{text:"Rit", style: ['regular', 'bold']},
             {text:"Opdrachtgever", style: ['regular', 'bold']},
             {text:"Laadplaats", style: ['regular', 'bold']},
@@ -32,24 +43,58 @@ module.exports = {
             {text:"Lading", style: ['regular', 'bold']},
             {text:"Hoeveelheid", style: ['regular', 'bold']}]); 
 
-        for(var i = 0; i < dagstaat.ritten.length; i++)
-        {
-            var row = [];
-            var rit = dagstaat.ritten[i];
 
-            row.push({ text: rit.id, fontSize: 11});
-            row.push({ text: rit.opdrachtgever, fontSize: 11});
-            row.push({ text: rit.laadplaats, fontSize: 11});
-            row.push({ text: rit.laadplaats_aankomst, fontSize: 11});
-            row.push({ text: rit.laadplaats_vertrek, fontSize: 11});
-            row.push({ text: rit.losplaats, fontSize: 11});
-            row.push({ text: rit.losplaats_aankomst, fontSize: 11});
-            row.push({ text: rit.losplaats_vertrek, fontSize: 11});
-            row.push({ text: rit.lading, fontSize: 11});
-            row.push({ text: rit.hoeveelheid, fontSize: 11});
+            for(var i = 0; i < 10; i++)
+            {
+                var row = [];
+                var rit = dagstaat.ritten[counter];
 
-            body.push(row);
+                if(rit)
+                {
+                    row.push({ text: rit.id, fontSize: 11});
+                    row.push({ text: rit.opdrachtgever, fontSize: 11});
+                    row.push({ text: rit.laadplaats, fontSize: 11});
+                    row.push({ text: rit.laadplaats_aankomst, fontSize: 11});
+                    row.push({ text: rit.laadplaats_vertrek, fontSize: 11});
+                    row.push({ text: rit.losplaats, fontSize: 11});
+                    row.push({ text: rit.losplaats_aankomst, fontSize: 11});
+                    row.push({ text: rit.losplaats_vertrek, fontSize: 11});
+                    row.push({ text: rit.lading, fontSize: 11});
+                    row.push({ text: rit.hoeveelheid, fontSize: 11});
+                }
+                else
+                {
+                    row.push({ text: (t*10)+(i+1) + "", fontSize: 11});
+                    row.push({ text: "", fontSize: 11});
+                    row.push({ text: "", fontSize: 11});
+                    row.push({ text: "", fontSize: 11});
+                    row.push({ text: "", fontSize: 11});
+                    row.push({ text: "", fontSize: 11});
+                    row.push({ text: "", fontSize: 11});
+                    row.push({ text: "", fontSize: 11});
+                    row.push({ text: "", fontSize: 11});
+                    row.push({ text: "", fontSize: 11});
+                }
 
+                
+
+                body.push(row);
+
+                counter++;
+
+            }
+
+            obj.table = {};
+            obj.table.headerRows = 1;
+            obj.table.style = 'regular';
+            obj.table.widths = [ 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto' ];
+            obj.table.body = body;
+            obj.width = "95%";
+
+            if(t+1 != tables)
+                obj.pageBreak = "after";
+
+            content.push(obj);
 
         }
 
@@ -58,9 +103,11 @@ module.exports = {
             pageSize: 'A4',
 
             pageOrientation: 'landscape',
-            content: [
+            pageMargins: [40, 170, 40, 170],
+            header:
+            [
                 {
-                    margin: [0,0],
+                    margin: [40,10],
                     columns:
                     [
                         {
@@ -72,10 +119,10 @@ module.exports = {
                             style: ['right', 'regular']
                         }
                     ],
-
                 },
+                    
                 {
-                    margin: [0,10],
+                    margin: [40,10],
                     columns:
                     [
                         {
@@ -95,26 +142,19 @@ module.exports = {
                         }
                     ]
                 },
+            ],
+            content: content,
+            footer:
+            [
                 {
-                    table:
-                    {
-                        headerRows: 1,
-                        style: 'regular',
-                        widths: [ 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto' ],
-                        body: body
-                        
-                        
-                    },
-                    width: '95%'
-                },
-                {
-                    margin: [0,5,0,10],
+                    margin: [40,5,0,10],
                     text: [
                         {text: 'Opmerkingen: ', style: ['regular', 'bold']},
                         {text: dagstaat.opmerking, style: ['regular']}
                     ]
                 },
                 {
+                    margin:[40,0],
                     text:
                     [
                                 {text: "Werkbonnen afgegeven aan: ", style: ['regular','bold']},
@@ -122,7 +162,7 @@ module.exports = {
                     ],
                 },
                 {
-                    margin: [0,0,0,20],
+                    margin: [40,0,0,20],
                     columns:
                     [
                         {
@@ -166,12 +206,11 @@ module.exports = {
                     ]
                 },
                 {
-                    
-                            text: 'Inschrijfnummer Kamer van Koophandel Oost-Brabant 160.48.725  |  Wij rijden onder A.V.C./CMR condities.',
+                    text: 'Inschrijfnummer Kamer van Koophandel Oost-Brabant 160.48.725  |  Wij rijden onder A.V.C./CMR condities.',
                             width: 'auto',
                             style: 'smaller',
                 }
-                
+                    
                 ],
                 styles: {
                     bold:

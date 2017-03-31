@@ -116,7 +116,7 @@ router.post("/:id", auth.requireLoggedin, function(req, res, next)
             + "'" + opmerking + "', "
             + "'" + afgifte + "', "
             + "'" + transporteur + "', "
-            + "" + pauze + ", "
+            + "'" + pauze + "', "
             + "'" + naam_uitvoerder + "', "
             + "'" + naam_chauffeur + "');";
     } 
@@ -130,7 +130,7 @@ router.post("/:id", auth.requireLoggedin, function(req, res, next)
             + "opmerking = '" + opmerking + "', "
             + "afgifte = '" + afgifte + "', "
             + "transporteur = '" + transporteur + "', "
-            + "pauze = " + pauze + ", "
+            + "pauze = '" + pauze + "', "
             + "naam_uitvoerder = '" + naam_uitvoerder + "', "
             + "naam_chauffeur = '" + naam_chauffeur + "' "
             + "WHERE id = " + id + ";";
