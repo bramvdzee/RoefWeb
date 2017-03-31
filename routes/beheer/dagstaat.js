@@ -94,7 +94,6 @@ router.post("/:id", auth.requireLoggedin, function(req, res, next)
     //dagstaat
     var id = req.params.id;
     var klant_id = req.body.inputKlant;
-    var woonplaats = req.body.inputWoonplaats;
     var datum = req.body.inputDatum;
     var afgifte = req.body.inputAfgifte;
     var transporteur = req.body.inputTransporteur;
@@ -109,11 +108,10 @@ router.post("/:id", auth.requireLoggedin, function(req, res, next)
     
     if(id == 0)
     {
-        query = "INSERT INTO dagstaat (klant_id, kenteken_id, wagentype_id, woonplaats, datum, opmerking, afgifte, transporteur, pauze, naam_uitvoerder, naam_chauffeur) VALUES ("
+        query = "INSERT INTO dagstaat (klant_id, kenteken_id, wagentype_id, datum, opmerking, afgifte, transporteur, pauze, naam_uitvoerder, naam_chauffeur) VALUES ("
             + "" + klant_id + ", "
             + "" + kenteken_id + ", "
             + "" + wagentype_id + ", "
-            + "'" + woonplaats + "', "
             + "'" + datum + "', "
             + "'" + opmerking + "', "
             + "'" + afgifte + "', "
@@ -128,7 +126,6 @@ router.post("/:id", auth.requireLoggedin, function(req, res, next)
             + "klant_id = " + klant_id + ", "
             + "kenteken_id = " + kenteken_id + ", "
             + "wagentype_id = " + wagentype_id + ", "
-            + "woonplaats = '" + woonplaats+ "', "
             + "datum = '" + datum + "', "
             + "opmerking = '" + opmerking + "', "
             + "afgifte = '" + afgifte + "', "
@@ -222,7 +219,7 @@ router.get('/:id/export', auth.requireLoggedin, function(req, res, next) {
 
     var db = req.app.locals.connection;
 
-  db.query('SELECT d.*, k.naam AS klant_naam, ke.kenteken as kenteken, w.type as wagentype FROM dagstaat AS d ' 
+  db.query('SELECT d.*, k.naam AS klant_naam, k.woonplaats AS klant_woonplaats ke.kenteken as kenteken, w.type as wagentype FROM dagstaat AS d ' 
             + 'INNER JOIN klant k ON d.klant_id = k.id ' 
             + 'INNER JOIN kenteken ke ON d.kenteken_id = ke.id '
             + 'INNER JOIN wagentype w ON d.wagentype_id = w.id '

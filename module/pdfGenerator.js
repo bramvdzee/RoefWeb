@@ -89,7 +89,7 @@ module.exports = {
                             style: ['regular', 'bold']
                         },
                         {
-                            text: dagstaat.klant_naam + ' \n \n' + dagstaat.woonplaats + '\n \n' + dagstaat.datum,
+                            text: dagstaat.klant_naam + ' \n \n' + dagstaat.klant_woonplaats + '\n \n' + dagstaat.datum,
                             width: '*',
                             style: 'regular'
                         }
