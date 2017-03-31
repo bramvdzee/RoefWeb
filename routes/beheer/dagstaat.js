@@ -219,7 +219,7 @@ router.get('/:id/export', auth.requireLoggedin, function(req, res, next) {
 
     var db = req.app.locals.connection;
 
-  db.query('SELECT d.*, k.naam AS klant_naam, k.woonplaats AS klant_woonplaats ke.kenteken as kenteken, w.type as wagentype FROM dagstaat AS d ' 
+  db.query('SELECT d.*, k.naam AS klant_naam, k.woonplaats AS klant_woonplaats, ke.kenteken as kenteken, w.type as wagentype FROM dagstaat AS d ' 
             + 'INNER JOIN klant k ON d.klant_id = k.id ' 
             + 'INNER JOIN kenteken ke ON d.kenteken_id = ke.id '
             + 'INNER JOIN wagentype w ON d.wagentype_id = w.id '
