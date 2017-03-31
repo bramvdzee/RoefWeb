@@ -54,11 +54,11 @@ module.exports = {
                     row.push({ text: rit.id, fontSize: 11});
                     row.push({ text: rit.opdrachtgever, fontSize: 11});
                     row.push({ text: rit.laadplaats, fontSize: 11});
-                    row.push({ text: rit.laadplaats_aankomst, fontSize: 11});
-                    row.push({ text: rit.laadplaats_vertrek, fontSize: 11});
+                    row.push({ text: rit.laadplaats_aankomst.substr(0,5), fontSize: 11});
+                    row.push({ text: rit.laadplaats_vertrek.substr(0,5), fontSize: 11});
                     row.push({ text: rit.losplaats, fontSize: 11});
-                    row.push({ text: rit.losplaats_aankomst, fontSize: 11});
-                    row.push({ text: rit.losplaats_vertrek, fontSize: 11});
+                    row.push({ text: rit.losplaats_aankomst.substr(0,5), fontSize: 11});
+                    row.push({ text: rit.losplaats_vertrek.substr(0,5), fontSize: 11});
                     row.push({ text: rit.lading, fontSize: 11});
                     row.push({ text: rit.hoeveelheid, fontSize: 11});
                 }
@@ -186,7 +186,7 @@ module.exports = {
                                 {text: "Eindtijd: ", style: ['regular','bold']},
                                 {text: dagstaat.dag_eind + "\n", style: 'regular'},
                                 {text: "Pauze: ", style: ['regular','bold']},
-                                {text: dagstaat.pauze + "\n", style: 'regular'},
+                                {text: dagstaat.pauze.substr(0,5) + "\n", style: 'regular'},
                                 {text: "Totaal uren: ", style: ['regular','bold']},
                                 {text: dagstaat.dag_totaal + "\n", style: 'regular'},
                             ],
