@@ -250,8 +250,10 @@ router.get('/:id/export', auth.requireLoggedin, function(req, res, next) {
 
             var difference = new Date(time2.getTime() - time1.getTime());
 
-            var hours = difference.getHours() - parseInt(dagstaat.pauze);
-            var minutes = difference.getMinutes();
+            var pauzeTime = new Date("01/01/2017" + dagstaat.pauze);
+
+            var hours = difference.getHours() - pauzeTime.getHours();
+            var minutes = difference.getMinutes() - pauzeTime.getMinutes();
             var total = (hours > 10 ? hours : "0" + hours) + ":" + (minutes > 10 ? minutes : "0" + minutes);
 
             dagstaat.dag_totaal = total;
