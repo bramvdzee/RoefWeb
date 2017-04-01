@@ -10,6 +10,8 @@ router.get('/', auth.requireLoggedIn, auth.requireRole("Beheerder"), function(re
     db.query('SELECT * FROM dagstaat',function(err,rows){
         if(err) throw err;
 
+        
+
         res.json(rows);
     });
 

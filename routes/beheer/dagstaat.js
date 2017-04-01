@@ -7,8 +7,54 @@ router.get('/', auth.requireLoggedin, function(req, res, next) {
 
   var db = req.app.locals.connection;
 
-  db.query('SELECT * FROM dagstaat',function(err,rows){
+  db.query("SELECT d.*, k.naam as klant_naam, "
+         + "(SELECT MIN(laadplaats_aankomst) FROM dagstaat_rit WHERE dagstaat_id = d.id) AS dag_begin, "
+        + "(SELECT MAX(losplaats_vertrek) FROM dagstaat_rit WHERE dagstaat_id = d.id) AS dag_eind " 
+        + "FROM dagstaat AS d "
+        + "INNER JOIN klant AS k ON d.klant_id = k.id" ,function(err,rows){
+
         if(err) throw err;
+
+        for(var i = 0; i < rows.length; i++)
+        {
+        
+            rows[i].dag_begin = rows[i].dag_begin.substr(0,5);    
+            rows[i].dag_eind = rows[i].dag_eind.substr(0,5);
+            rows[i].datum = new Date(rows[i].datum).toDateString();
+
+            if(rows[i].dag_begin && rows[i].dag_eind)
+            {
+                var time1 = new Date("01/01/2017 " + rows[i].dag_begin);
+                var time2 = new Date("01/01/2017 " + rows[i].dag_eind);
+
+                if(time2 < time1)
+                {
+                    time2 = new Date("01/02/2017 " + rows[i].dag_eind);
+                }
+
+                var difference = new Date(time2.getTime() - time1.getTime());
+                var pauzeTime = new Date("01/01/2017 " + rows[i].pauze);
+
+                var hours = difference.getHours() - pauzeTime.getHours();
+                var minutes = difference.getMinutes() - pauzeTime.getMinutes();
+                
+                if(minutes < 0)
+                {
+                    minutes = 60 + minutes;
+                    hours -= 1;
+                }
+                if(hours < 0)
+                    hours = 0;
+
+                var total = (hours > 10 ? hours : "0" + hours) + ":" + (minutes > 10 ? minutes : "0" + minutes);
+
+                rows[i].dag_totaal = total;
+            }
+            else
+            {
+                rows[i].dag_totaal = "00:00";
+            }
+        }
 
         return res.render('overview/dagstaat_list', {data: rows});
     });
@@ -245,7 +291,7 @@ router.get('/:id/export', auth.requireLoggedin, function(req, res, next) {
             var time2 = new Date("01/01/2017 " + dag_eind.substr(0,5));
 
             if(time2 < time1)
-                time2 = new Date("02/01/2017 " + dag_eind);
+                time2 = new Date("01/02/2017 " + dag_eind);
 
 
             var difference = new Date(time2.getTime() - time1.getTime());
@@ -254,9 +300,7 @@ router.get('/:id/export', auth.requireLoggedin, function(req, res, next) {
 
             var hours = difference.getHours() - pauzeTime.getHours();
             var minutes = difference.getMinutes() - pauzeTime.getMinutes();
-    
-            console.log(hours + " - " + minutes);
-            
+                
             if(minutes < 0)
             {
                 minutes = 60 + minutes;
