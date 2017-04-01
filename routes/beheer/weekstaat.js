@@ -1,6 +1,7 @@
 var express = require('express');
 var auth = require('../../module/webAuth');
 var pdf = require("../../module/pdfGenerator");
+var hourCalc = require('../../module/calulateHours');
 var router = express.Router();
 
 router.get('/', auth.requireLoggedin, function(req, res, next) {
@@ -60,20 +61,7 @@ router.post('/', auth.requireLoggedin, function(req, res, next) {
       {
         if(dagstaat.dag_begin && dagstaat.dag_eind)
           {
-            var time1 = new Date("01/01/2017 " + dagstaat.dag_begin.substr(0,5));   
-            var time2 = new Date("01/01/2017 " + dagstaat.dag_eind.substr(0,5));
-
-            if(time2 < time1)
-                time2 = new Date("02/01/2017 " + dagstaat.dag_eind);
-
-
-            var difference = new Date(time2.getTime() - time1.getTime());
-
-            var hours = difference.getHours() - parseInt(dagstaat.pauze);
-            var minutes = difference.getMinutes();
-            var total = (hours > 10 ? hours : "0" + hours) + ":" + (minutes > 10 ? minutes : "0" + minutes);
-
-            dagstaat.dag_totaal = total;
+            dagstaat.dag_totaal = hourCalc.getDagTotal(dagstaat.dag_begin, dagstaat.dag_eind, dagstaat.pauze);
           }
           else
           {

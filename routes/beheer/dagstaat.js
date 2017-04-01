@@ -1,6 +1,7 @@
 var express = require('express');
 var auth = require('../../module/webAuth');
 var pdf = require("../../module/pdfGenerator");
+var hourCalc = require("../../module/calulateHours");
 var router = express.Router();
 
 router.get('/', auth.requireLoggedin, function(req, res, next) {
@@ -18,37 +19,13 @@ router.get('/', auth.requireLoggedin, function(req, res, next) {
         for(var i = 0; i < rows.length; i++)
         {
         
-            rows[i].dag_begin = rows[i].dag_begin.substr(0,5);    
-            rows[i].dag_eind = rows[i].dag_eind.substr(0,5);
             rows[i].datum = new Date(rows[i].datum).toDateString();
 
             if(rows[i].dag_begin && rows[i].dag_eind)
             {
-                var time1 = new Date("01/01/2017 " + rows[i].dag_begin);
-                var time2 = new Date("01/01/2017 " + rows[i].dag_eind);
-
-                if(time2 < time1)
-                {
-                    time2 = new Date("01/02/2017 " + rows[i].dag_eind);
-                }
-
-                var difference = new Date(time2.getTime() - time1.getTime());
-                var pauzeTime = new Date("01/01/2017 " + rows[i].pauze);
-
-                var hours = difference.getHours() - pauzeTime.getHours();
-                var minutes = difference.getMinutes() - pauzeTime.getMinutes();
-                
-                if(minutes < 0)
-                {
-                    minutes = 60 + minutes;
-                    hours -= 1;
-                }
-                if(hours < 0)
-                    hours = 0;
-
-                var total = (hours > 10 ? hours : "0" + hours) + ":" + (minutes > 10 ? minutes : "0" + minutes);
-
-                rows[i].dag_totaal = total;
+                rows[i].dag_begin = hourCalc.trim(rows[i].dag_begin);
+                rows[i].dag_eind = hourCalc.trim(rows[i].dag_eind);
+                rows[i].dag_totaal = hourCalc.getDagTotal(rows[i].dag_begin, rows[i].dag_eind, rows[i].pauze);
             }
             else
             {
@@ -287,33 +264,9 @@ router.get('/:id/export', auth.requireLoggedin, function(req, res, next) {
             var dag_begin = dagstaat.ritten[0].laadplaats_aankomst;
             var dag_eind = dagstaat.ritten[dagstaat.ritten.length-1].losplaats_vertrek;
 
-            var time1 = new Date("01/01/2017 " + dag_begin.substr(0,5));   
-            var time2 = new Date("01/01/2017 " + dag_eind.substr(0,5));
-
-            if(time2 < time1)
-                time2 = new Date("01/02/2017 " + dag_eind);
-
-
-            var difference = new Date(time2.getTime() - time1.getTime());
-
-            var pauzeTime = new Date("01/01/2017 " + dagstaat.pauze);
-
-            var hours = difference.getHours() - pauzeTime.getHours();
-            var minutes = difference.getMinutes() - pauzeTime.getMinutes();
-                
-            if(minutes < 0)
-            {
-                minutes = 60 + minutes;
-                hours -= 1;
-            }
-            if(hours < 0)
-                hours = 0;
-
-            var total = (hours > 10 ? hours : "0" + hours) + ":" + (minutes > 10 ? minutes : "0" + minutes);
-
-            dagstaat.dag_totaal = total;
-            dagstaat.dag_begin = dag_begin.substr(0,5);
-            dagstaat.dag_eind = dag_eind.substr(0,5);
+            dagstaat.dag_totaal = hourCalc.getDagTotal(dag_begin, dag_eind, dagstaat.pauze);
+            dagstaat.dag_begin = hourCalc.trim(dag_begin);
+            dagstaat.dag_eind = hourCalc.trim(dag_eind);
 
             pdf.generateDagstaat(res, dagstaat);
 
