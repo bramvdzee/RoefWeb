@@ -24,25 +24,23 @@ router.post('/', auth.requireLoggedIn, auth.requireRole("Beheerder"), function(r
     var klant_id = req.body.klant_id;
     var kenteken_id = req.body.kenteken_id;
     var wagentype_id = req.body.wagentype_id;
-    var woonplaats = config.escape(req.body.woonplaats);
     var datum = req.body.datum.slice(0,10).replace("-", "/");
     var opmerking = (req.body.opmerking ? config.escape(req.body.opmerking) : "");
-    var afgifte = config.escape(req.body.afgifte);
+    var afgifte = (req.body.afgifte ? config.escape(req.body.afgifte) : "");
     var transporteur = config.escape(req.body.transporteur);
     var pauze = req.body.pauze;
     var naam_uitvoerder = config.escape(req.body.naam_uitvoerder);
     var naam_chauffeur = config.escape(req.body.naam_chauffeur);
 
-    var query = "INSERT INTO dagstaat (klant_id, kenteken_id, wagentype_id, woonplaats, datum, opmerking, afgifte, transporteur, pauze, naam_uitvoerder, naam_chauffeur) VALUES ("
+    var query = "INSERT INTO dagstaat (klant_id, kenteken_id, wagentype_id, datum, opmerking, afgifte, transporteur, pauze, naam_uitvoerder, naam_chauffeur) VALUES ("
     + "" + klant_id + ","
     + "" + kenteken_id + ","
     + "" + wagentype_id + ","
-    + "'" + woonplaats + "',"
     + "'" + datum + "',"
     + "'" + opmerking + "',"
     + "'" + afgifte + "',"
     + "'" + transporteur + "',"
-    + "" + pauze + ", "
+    + "'" + pauze + "', "
     + "'" + naam_uitvoerder + "',"
     + "'" + naam_chauffeur + "')";
 
@@ -74,7 +72,7 @@ router.post('/', auth.requireLoggedIn, auth.requireRole("Beheerder"), function(r
             + "'" + toTimeStamp(rit.losplaats_aankomst) + "',"
             + "'" + toTimeStamp(rit.losplaats_vertrek) + "',"
             + "'" + lading + "',"
-            + "" + rit.hoeveelheid + ")";
+            + "'" + rit.hoeveelheid + "')";
 
             if(i != req.body.ritten.length-1)
             {
@@ -96,17 +94,14 @@ router.post('/', auth.requireLoggedIn, auth.requireRole("Beheerder"), function(r
 
 router.put('/:id', auth.requireLoggedIn, auth.requireRole("Beheerder"), function(req, res, next) {
   
-    console.log(req.body);
-
     var db = req.app.locals.connection;
 
     var klant_id = req.body.klant_id;
     var kenteken_id = req.body.kenteken_id;
     var wagentype_id = req.body.wagentype_id;
-    var woonplaats = config.escape(req.body.woonplaats);
     var datum = req.body.datum.slice(0,10).replace("-", "/");
     var opmerking = (req.body.opmerking ? config.escape(req.body.opmerking) : "");
-    var afgifte = config.escape(req.body.afgifte);
+    var afgifte = (req.body.afgifte ? config.escape(req.body.afgifte) : "");
     var transporteur = config.escape(req.body.transporteur);
     var pauze = req.body.pauze;
     var naam_uitvoerder = config.escape(req.body.naam_uitvoerder);
@@ -116,12 +111,11 @@ router.put('/:id', auth.requireLoggedIn, auth.requireRole("Beheerder"), function
     + "klant_id = " + klant_id + ","
     + "kenteken_id = " + kenteken_id + ","
     + "wagentype_id = " + wagentype_id + ","
-    + "woonplaats = '" + woonplaats + "',"
     + "datum = '" + datum + "',"
     + "opmerking = '" + opmerking + "',"
     + "afgifte = '" + afgifte + "',"
     + "transporteur = '" + transporteur + "',"
-    + "pauze = " + pauze + ", "
+    + "pauze = '" + pauze + "', "
     + "naam_uitvoerder = '" + naam_uitvoerder + "',"
     + "naam_chauffeur = '" + naam_chauffeur + "'"
     + "WHERE id = " + req.params.id;
@@ -140,7 +134,6 @@ router.put('/:id', auth.requireLoggedIn, auth.requireRole("Beheerder"), function
             for(var i = 0; i < req.body.ritten.length; i++)
             {
 
-                console.log(rit);
                 var rit = req.body.ritten[i];
                 var opdrachtgever = rit.opdrachtgever;
                 var laadplaats = rit.laadplaats;
@@ -151,13 +144,13 @@ router.put('/:id', auth.requireLoggedIn, auth.requireRole("Beheerder"), function
                 + "" + req.params.id + ","
                 + "'" + opdrachtgever + "',"
                 + "'" + laadplaats + "',"
-                + "'" + rit.laadplaats_aankomst + "',"
-                + "'" + rit.laadplaats_vertrek + "',"
+                + "'" + toTimeStamp(rit.laadplaats_aankomst) + "',"
+                + "'" + toTimeStamp(rit.laadplaats_vertrek) + "',"
                 + "'" + losplaats + "',"
-                + "'" + rit.losplaats_aankomst + "',"
-                + "'" + rit.losplaats_vertrek + "',"
+                + "'" + toTimeStamp(rit.losplaats_aankomst) + "',"
+                + "'" + toTimeStamp(rit.losplaats_vertrek) + "',"
                 + "'" + lading + "',"
-                + "" + rit.hoeveelheid + ")";
+                + "'" + rit.hoeveelheid + "')";
 
                 if(i != req.body.ritten.length-1)
                 {
@@ -219,6 +212,9 @@ router.delete('/:id', auth.requireLoggedIn, auth.requireRole("Beheerder"), funct
 
 function toTimeStamp(date)
 {
+
+    if(isNaN(Date.parse(date)))
+        return date.substr(0,5);
 
     date = new Date(date);
     return date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();

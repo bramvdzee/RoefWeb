@@ -19,7 +19,7 @@ router.post('/', auth.requireLoggedIn, auth.requireRole("Beheerder"), function(r
   
     var db = req.app.locals.connection;
     
-    db.query("INSERT INTO klant (naam) VALUES ('" + config.escape(req.body.naam) + "')", function(err, rows)
+    db.query("INSERT INTO klant (naam, woonplaats) VALUES ('" + config.escape(req.body.naam) + "', '" + config.escape(req.body.woonplaats) +"')", function(err, rows)
     {
         if(err) throw err;
 
@@ -32,7 +32,7 @@ router.put('/:id', auth.requireLoggedIn, auth.requireRole("Beheerder"), function
   
     var db = req.app.locals.connection;
     
-    db.query("UPDATE klant SET naam = '" + config.escape(req.body.naam) + "' WHERE id = " + req.body.id, function(err, rows)
+    db.query("UPDATE klant SET naam = '" + config.escape(req.body.naam) + "', woonplaats='" + config.escape(req.body.woonplaats) + "' WHERE id = " + req.body.id, function(err, rows)
     {
         if(err) throw err;
 
