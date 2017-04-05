@@ -188,7 +188,7 @@ module.exports = {
                                 {text: "Pauze: ", style: ['regular','bold']},
                                 {text: dagstaat.pauze.substr(0,5) + "\n", style: 'regular'},
                                 {text: "Totaal uren: ", style: ['regular','bold']},
-                                {text: dagstaat.dag_totaal + "\n", style: 'regular'},
+                                {text: dagstaat.totaal_uren.substr(0,5) + "\n", style: 'regular'},
                             ],
                             width: '33%',
                             
@@ -269,8 +269,8 @@ module.exports = {
                 totalData[dagstaat.wagentype].minutes = 0;
             }
             
-            var hours = parseInt(dagstaat.dag_totaal.split(":")[0]);
-            var minutes = parseInt(dagstaat.dag_totaal.split(":")[1]);
+            var hours = parseInt(dagstaat.totaal_uren.split(":")[0]);
+            var minutes = parseInt(dagstaat.totaal_uren.split(":")[1]);
             
             totalData[dagstaat.wagentype].hours += hours;
             totalData[dagstaat.wagentype].minutes += minutes;
@@ -305,7 +305,7 @@ module.exports = {
                     '', 
                     {text: dagstaat.id},
                     {text: dagstaat.wagentype},
-                    {text: dagstaat.dag_totaal}
+                    {text: dagstaat.totaal_uren}
                 ]);
             }
 

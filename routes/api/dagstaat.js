@@ -8,9 +8,7 @@ router.get('/', auth.requireLoggedIn, auth.requireRole("Beheerder"), function(re
   
     var db = req.app.locals.connection;
 
-    db.query("SELECT d.*, k.naam as klant_naam, "
-         + "(SELECT MIN(laadplaats_aankomst) FROM dagstaat_rit WHERE dagstaat_id = d.id) AS dag_begin, "
-        + "(SELECT MAX(losplaats_vertrek) FROM dagstaat_rit WHERE dagstaat_id = d.id) AS dag_eind " 
+    db.query("SELECT d.*, k.naam as klant_naam "
         + "FROM dagstaat AS d "
         + "INNER JOIN klant AS k ON d.klant_id = k.id" ,function(err,rows){
         
@@ -52,8 +50,23 @@ router.post('/', auth.requireLoggedIn, function(req, res, next) {
     var pauze = req.body.pauze;
     var naam_uitvoerder = config.escape(req.body.naam_uitvoerder);
     var naam_chauffeur = config.escape(req.body.naam_chauffeur);
+    var totaal_uren = req.body.totaal_uren;
 
-    var query = "INSERT INTO dagstaat (klant_id, kenteken_id, wagentype_id, datum, opmerking, afgifte, transporteur, pauze, naam_uitvoerder, naam_chauffeur) VALUES ("
+    if(!totaal_uren)
+    {
+
+        if(!pauze)
+        {
+            pauze = "00:00:00";
+        }
+        var begin = toTimeStamp(req.body.ritten[0].laadplaats_aankomst);
+        var eind = toTimeStamp(req.body.ritten[req.body.ritten.length-1].losplaats_vertrek);
+
+        totaal_uren = hourCalc.getDagTotal(begin, eind, pauze);
+
+    }
+
+    var query = "INSERT INTO dagstaat (klant_id, kenteken_id, wagentype_id, datum, opmerking, afgifte, transporteur, pauze, naam_uitvoerder, naam_chauffeur, totaal_uren) VALUES ("
     + "" + klant_id + ","
     + "" + kenteken_id + ","
     + "" + wagentype_id + ","
@@ -63,7 +76,8 @@ router.post('/', auth.requireLoggedIn, function(req, res, next) {
     + "'" + transporteur + "',"
     + "'" + pauze + "', "
     + "'" + naam_uitvoerder + "',"
-    + "'" + naam_chauffeur + "')";
+    + "'" + naam_chauffeur + "',"
+    + "'" + totaal_uren + "')";
 
     db.query(query, function(err, rows)
     {
@@ -127,6 +141,21 @@ router.put('/:id', auth.requireLoggedIn, auth.requireRole("Beheerder"), function
     var pauze = req.body.pauze;
     var naam_uitvoerder = config.escape(req.body.naam_uitvoerder);
     var naam_chauffeur = config.escape(req.body.naam_chauffeur);
+    var totaal_uren = req.body.totaal_uren;
+
+    if(!totaal_uren)
+    {
+
+        if(!pauze)
+        {
+            pauze = "00:00:00";
+        }
+        var begin = toTimeStamp(req.body.ritten[0].laadplaats_aankomst);
+        var eind = toTimeStamp(req.body.ritten[req.body.ritten.length-1].losplaats_vertrek);
+
+        totaal_uren = hourCalc.getDagTotal(begin, eind, pauze);
+
+    }
 
     var query = "UPDATE dagstaat SET "
     + "klant_id = " + klant_id + ","
@@ -138,7 +167,8 @@ router.put('/:id', auth.requireLoggedIn, auth.requireRole("Beheerder"), function
     + "transporteur = '" + transporteur + "',"
     + "pauze = '" + pauze + "', "
     + "naam_uitvoerder = '" + naam_uitvoerder + "',"
-    + "naam_chauffeur = '" + naam_chauffeur + "'"
+    + "naam_chauffeur = '" + naam_chauffeur + "',"
+    + "totaal_uren = '" + totaal_uren + "'"
     + "WHERE id = " + req.params.id;
 
     db.query(query, function(err, rows)

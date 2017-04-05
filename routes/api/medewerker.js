@@ -23,7 +23,7 @@ router.post('/', auth.requireLoggedIn, auth.requireRole("Beheerder"), function(r
 
     var voornaam = config.escape(req.body.voornaam);
     var achternaam = config.escape(req.body.achternaam);
-    var rol_id = config.escape(req.body.rol_id);
+    var rol_id = req.body.rol_id;
     var gebruikersnaam = config.escape(req.body.gebruikersnaam);
     var ww = bcrypt.hashSync(req.body.wachtwoord);
 
@@ -42,7 +42,6 @@ router.post('/', auth.requireLoggedIn, auth.requireRole("Beheerder"), function(r
         var tussenvoegsel = config.escape(req.body.tussenvoegsel);
         query += ", '" + tussenvoegsel + "'";
     }
-        
 
     query += ")";
 
@@ -62,7 +61,7 @@ router.put('/:id', auth.requireLoggedIn, auth.requireRole("Beheerder"), function
 
     var voornaam = config.escape(req.body.voornaam);
     var achternaam = config.escape(req.body.achternaam);
-    var rol_id = config.escape(req.body.rol_id);
+    var rol_id = req.body.rol_id;
     var gebruikersnaam = config.escape(req.body.gebruikersnaam);
 
     var query = "UPDATE medewerker SET " +
@@ -70,6 +69,13 @@ router.put('/:id', auth.requireLoggedIn, auth.requireRole("Beheerder"), function
     "achternaam = '" + achternaam + "'," +
     "rol_id = " + rol_id + "," +
     "gebruikersnaam = '" + gebruikersnaam + "'";
+
+    if(req.body.wachtwoord)
+    {
+        var wachtwoord = req.body.wachtwoord;
+        wachtwoord = bcrypt.hashSync(wachtwoord);
+        query += ", wachtwoord = '" + wachtwoord + "'";
+    }
 
     if(req.body.tussenvoegsel)
     {

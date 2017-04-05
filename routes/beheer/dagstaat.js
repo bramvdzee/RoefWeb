@@ -20,17 +20,9 @@ router.get('/', auth.requireLoggedin, function(req, res, next) {
         {
         
             rows[i].datum = new Date(rows[i].datum).toDateString();
+            rows[i].dag_begin = hourCalc.trim(rows[i].dag_begin);
+            rows[i].dag_eind = hourCalc.trim(rows[i].dag_eind);
 
-            if(rows[i].dag_begin && rows[i].dag_eind)
-            {
-                rows[i].dag_begin = hourCalc.trim(rows[i].dag_begin);
-                rows[i].dag_eind = hourCalc.trim(rows[i].dag_eind);
-                rows[i].dag_totaal = hourCalc.getDagTotal(rows[i].dag_begin, rows[i].dag_eind, rows[i].pauze);
-            }
-            else
-            {
-                rows[i].dag_totaal = "00:00";
-            }
         }
 
         return res.render('overview/dagstaat_list', {data: rows});
@@ -48,8 +40,6 @@ router.get('/:id', auth.requireLoggedin, function(req, res, next) {
         if(err) throw err;
         
         var dagstaat = rows[0];
-
-        
 
          db.query('SELECT * FROM dagstaat_rit WHERE dagstaat_id=' + req.params.id ,function(err,rows){
             if(err) throw err;
@@ -86,8 +76,10 @@ router.get('/:id', auth.requireLoggedin, function(req, res, next) {
                             {
                                 var date = new Date(dagstaat.datum);
                                 var monthInt = (parseInt(date.getMonth())+1);
+                                var dagInt = (parseInt(date.getDate()));
                                 var month = (monthInt < 10 ? "0" + monthInt : monthInt);
-                                dagstaat.datum = date.getFullYear() + "-" + month + "-" + date.getDate();
+                                var dag = (dagInt < 10 ? "0" + dagInt : dagInt);
+                                dagstaat.datum = date.getFullYear() + "-" + month + "-" + dag;
                             }
                             
 
@@ -126,12 +118,30 @@ router.post("/:id", auth.requireLoggedin, function(req, res, next)
     var pauze = req.body.inputPauze;
     var naam_uitvoerder = req.body.inputNaamUitvoerder;
     var naam_chauffeur = req.body.inputNaamChauffeur;
+    var ritten = parseInt(req.body.inputRitten);
+    
+    var totaal_uren = req.body.inputTotaalUren;
+
+    if(!totaal_uren)
+    {
+
+        if(!pauze)
+        {
+            pauze = "00:00:00";
+        }
+
+        var begin = req.body["inputLaadplaatsAankomst_1"];
+        var eind = req.body["inputLosplaatsVertrek_" + ritten];
+
+        totaal_uren = hourCalc.getDagTotal(begin, eind, pauze);
+
+    }
 
     var query;
     
     if(id == 0)
     {
-        query = "INSERT INTO dagstaat (klant_id, kenteken_id, wagentype_id, datum, opmerking, afgifte, transporteur, pauze, naam_uitvoerder, naam_chauffeur) VALUES ("
+        query = "INSERT INTO dagstaat (klant_id, kenteken_id, wagentype_id, datum, opmerking, afgifte, transporteur, pauze, naam_uitvoerder, naam_chauffeur, totaal_uren) VALUES ("
             + "" + klant_id + ", "
             + "" + kenteken_id + ", "
             + "" + wagentype_id + ", "
@@ -141,7 +151,8 @@ router.post("/:id", auth.requireLoggedin, function(req, res, next)
             + "'" + transporteur + "', "
             + "'" + pauze + "', "
             + "'" + naam_uitvoerder + "', "
-            + "'" + naam_chauffeur + "');";
+            + "'" + naam_chauffeur + "', "
+            + "'" + totaal_uren + "');";
     } 
     else
     {
@@ -155,7 +166,8 @@ router.post("/:id", auth.requireLoggedin, function(req, res, next)
             + "transporteur = '" + transporteur + "', "
             + "pauze = '" + pauze + "', "
             + "naam_uitvoerder = '" + naam_uitvoerder + "', "
-            + "naam_chauffeur = '" + naam_chauffeur + "' "
+            + "naam_chauffeur = '" + naam_chauffeur + "', "
+            + "totaal_uren = '" + totaal_uren + "' "
             + "WHERE id = " + id + ";";
     }
 
@@ -171,10 +183,7 @@ router.post("/:id", auth.requireLoggedin, function(req, res, next)
 
             if(err) throw err;
 
-            var ritten = parseInt(req.body.inputRitten);
             var ritQuery = "INSERT INTO dagstaat_rit (id, dagstaat_id, opdrachtgever, laadplaats, laadplaats_aankomst, laadplaats_vertrek, losplaats, losplaats_aankomst, losplaats_vertrek, lading, hoeveelheid) VALUES ";
-
-            console.log(ritten);
 
             for(var i = 0; i < ritten; i++)
             {
@@ -203,7 +212,7 @@ router.post("/:id", auth.requireLoggedin, function(req, res, next)
                         + "'" + rit_losplaats_aankomst + "', "
                         + "'" + rit_losplaats_vertrek + "', "
                         + "'" + rit_lading + "', "
-                        + "" + rit_hoeveelheid + ")";
+                        + "'" + rit_hoeveelheid + "')";
             }
 
             ritQuery += ";";
@@ -264,7 +273,6 @@ router.get('/:id/export', auth.requireLoggedin, function(req, res, next) {
             var dag_begin = dagstaat.ritten[0].laadplaats_aankomst;
             var dag_eind = dagstaat.ritten[dagstaat.ritten.length-1].losplaats_vertrek;
 
-            dagstaat.dag_totaal = hourCalc.getDagTotal(dag_begin, dag_eind, dagstaat.pauze);
             dagstaat.dag_begin = hourCalc.trim(dag_begin);
             dagstaat.dag_eind = hourCalc.trim(dag_eind);
 
