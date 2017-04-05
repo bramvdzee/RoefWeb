@@ -1,23 +1,44 @@
 var express = require('express');
 var auth = require('../../module/auth');
 var config = require('../../config/config');
+var hourCalc = require("../../module/calulateHours");
 var router = express.Router();
 
 router.get('/', auth.requireLoggedIn, auth.requireRole("Beheerder"), function(req, res, next) {
   
     var db = req.app.locals.connection;
 
-    db.query('SELECT * FROM dagstaat',function(err,rows){
+    db.query("SELECT d.*, k.naam as klant_naam, "
+         + "(SELECT MIN(laadplaats_aankomst) FROM dagstaat_rit WHERE dagstaat_id = d.id) AS dag_begin, "
+        + "(SELECT MAX(losplaats_vertrek) FROM dagstaat_rit WHERE dagstaat_id = d.id) AS dag_eind " 
+        + "FROM dagstaat AS d "
+        + "INNER JOIN klant AS k ON d.klant_id = k.id" ,function(err,rows){
+        
         if(err) throw err;
 
+        for(var i = 0; i < rows.length; i++)
+        {
         
+            //rows[i].datum = new Date(rows[i].datum).toDateString();
+
+            if(rows[i].dag_begin && rows[i].dag_eind)
+            {
+                rows[i].dag_begin = hourCalc.trim(rows[i].dag_begin);
+                rows[i].dag_eind = hourCalc.trim(rows[i].dag_eind);
+                rows[i].dag_totaal = hourCalc.getDagTotal(rows[i].dag_begin, rows[i].dag_eind, rows[i].pauze);
+            }
+            else
+            {
+                rows[i].dag_totaal = "00:00";
+            }
+        }
 
         res.json(rows);
     });
 
 });
 
-router.post('/', auth.requireLoggedIn, auth.requireRole("Beheerder"), function(req, res, next) {
+router.post('/', auth.requireLoggedIn, auth.requireRole("Medewerker"), function(req, res, next) {
   
     var db = req.app.locals.connection;
 

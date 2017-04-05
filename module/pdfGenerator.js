@@ -206,7 +206,7 @@ module.exports = {
                     ]
                 },
                 {
-                    text: 'Inschrijfnummer Kamer van Koophandel Oost-Brabant 160.48.725  |  Wij rijden onder A.V.C./CMR condities.',
+                    text: 'Inschrijfnummer Kamer van Koophandel Oost-Brabant 67915108  |  Wij rijden onder A.V.C./CMR condities.',
                             width: 'auto',
                             style: 'smaller',
                 }
