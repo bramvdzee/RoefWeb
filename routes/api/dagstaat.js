@@ -38,7 +38,7 @@ router.get('/', auth.requireLoggedIn, auth.requireRole("Beheerder"), function(re
 
 });
 
-router.post('/', auth.requireLoggedIn, auth.requireRole("Medewerker"), function(req, res, next) {
+router.post('/', auth.requireLoggedIn, function(req, res, next) {
   
     var db = req.app.locals.connection;
 
