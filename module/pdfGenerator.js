@@ -43,40 +43,24 @@ module.exports = {
             {text:"Lading", style: ['regular', 'bold']},
             {text:"Hoeveelheid", style: ['regular', 'bold']}]); 
 
+            var max = (dagstaat.ritten.length - counter > 10 ? 10 : dagstaat.ritten.length - counter);
 
-            for(var i = 0; i < 10; i++)
+
+            for(var i = 0; i < max; i++)
             {
                 var row = [];
                 var rit = dagstaat.ritten[counter];
 
-                if(rit)
-                {
-                    row.push({ text: rit.id, fontSize: 11});
-                    row.push({ text: rit.opdrachtgever, fontSize: 11});
-                    row.push({ text: rit.laadplaats, fontSize: 11});
-                    row.push({ text: rit.laadplaats_aankomst.substr(0,5), fontSize: 11});
-                    row.push({ text: rit.laadplaats_vertrek.substr(0,5), fontSize: 11});
-                    row.push({ text: rit.losplaats, fontSize: 11});
-                    row.push({ text: rit.losplaats_aankomst.substr(0,5), fontSize: 11});
-                    row.push({ text: rit.losplaats_vertrek.substr(0,5), fontSize: 11});
-                    row.push({ text: rit.lading, fontSize: 11});
-                    row.push({ text: rit.hoeveelheid, fontSize: 11});
-                }
-                else
-                {
-                    row.push({ text: (t*10)+(i+1) + "", fontSize: 11});
-                    row.push({ text: "", fontSize: 11});
-                    row.push({ text: "", fontSize: 11});
-                    row.push({ text: "", fontSize: 11});
-                    row.push({ text: "", fontSize: 11});
-                    row.push({ text: "", fontSize: 11});
-                    row.push({ text: "", fontSize: 11});
-                    row.push({ text: "", fontSize: 11});
-                    row.push({ text: "", fontSize: 11});
-                    row.push({ text: "", fontSize: 11});
-                }
-
-                
+                row.push({ text: rit.id, fontSize: 11});
+                row.push({ text: rit.opdrachtgever, fontSize: 11});
+                row.push({ text: rit.laadplaats, fontSize: 11});
+                row.push({ text: rit.laadplaats_aankomst.substr(0,5), fontSize: 11});
+                row.push({ text: rit.laadplaats_vertrek.substr(0,5), fontSize: 11});
+                row.push({ text: rit.losplaats, fontSize: 11});
+                row.push({ text: rit.losplaats_aankomst.substr(0,5), fontSize: 11});
+                row.push({ text: rit.losplaats_vertrek.substr(0,5), fontSize: 11});
+                row.push({ text: rit.lading, fontSize: 11});
+                row.push({ text: rit.hoeveelheid, fontSize: 11});    
 
                 body.push(row);
 
