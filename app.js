@@ -45,6 +45,12 @@ var hbs = exphbs.create({
 
     toJSON: function(obj) {
       return JSON.stringify(obj);
+    },
+    
+    select: function(selected, options) {
+    return options.fn(this).replace(
+        new RegExp(' value=\"' + selected + '\"'),
+        '$& selected="selected"');
     }
   }
 
@@ -86,9 +92,13 @@ app.use('/api/login', login);
 app.locals.storage = localStorage;
 
 app.locals.connection = mysql.createConnection({
-  host: "databases.aii.avans.nl",
-  user: "bpzee",
-  password: "Ab12345",
+  //host: "databases.aii.avans.nl",
+  //user: "bpzee",
+  //password: "Ab12345",
+  //database: "bpzee_db2"
+  host: "localhost",
+  user: "root",
+  password: "root",
   database: "bpzee_db2"
 });
 

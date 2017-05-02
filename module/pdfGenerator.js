@@ -82,6 +82,20 @@ module.exports = {
 
         }
 
+        var days = ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag", "Zondag"];
+
+        var dateParse = dagstaat.datum.split("/");
+        var dayParse = (parseInt(dateParse[0]) < 10 ? "0" + dateParse[0] : dateParse[0]);
+        var monthParse = (parseInt(dateParse[1]) < 10 ? "0" + dateParse[1] : dateParse[1]);
+        var yearParse = dateParse[2];
+
+
+        var date = new Date(monthParse + "/" + dayParse + "/" + yearParse);
+        console.log(date);
+        var dag = days[date.getDay() - 1];
+
+        var nacht = (dagstaat.nacht == 1 ? "(nacht) " : "");
+
 
         var dd = {
             pageSize: 'A4',
@@ -120,7 +134,7 @@ module.exports = {
                             style: ['regular', 'bold']
                         },
                         {
-                            text: dagstaat.klant_naam + ' \n \n' + dagstaat.klant_woonplaats + '\n \n' + dagstaat.datum,
+                            text: dagstaat.klant_naam + ' \n \n' + dagstaat.klant_woonplaats + '\n \n' + dag + " " + nacht + (dayParse + "/" + monthParse + "/" + yearParse),
                             width: '*',
                             style: 'regular'
                         }

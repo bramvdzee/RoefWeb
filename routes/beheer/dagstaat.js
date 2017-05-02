@@ -118,6 +118,7 @@ router.post("/:id", auth.requireLoggedin, function(req, res, next)
     var pauze = req.body.inputPauze;
     var naam_uitvoerder = req.body.inputNaamUitvoerder;
     var naam_chauffeur = req.body.inputNaamChauffeur;
+    var nacht = req.body.inputNacht;
     var ritten = parseInt(req.body.inputRitten);
     
     var totaal_uren = req.body.inputTotaalUren;
@@ -141,7 +142,7 @@ router.post("/:id", auth.requireLoggedin, function(req, res, next)
     
     if(id == 0)
     {
-        query = "INSERT INTO dagstaat (klant_id, kenteken_id, wagentype_id, datum, opmerking, afgifte, transporteur, pauze, naam_uitvoerder, naam_chauffeur, totaal_uren) VALUES ("
+        query = "INSERT INTO dagstaat (klant_id, kenteken_id, wagentype_id, datum, opmerking, afgifte, transporteur, pauze, naam_uitvoerder, naam_chauffeur, nacht, totaal_uren) VALUES ("
             + "" + klant_id + ", "
             + "" + kenteken_id + ", "
             + "" + wagentype_id + ", "
@@ -152,6 +153,7 @@ router.post("/:id", auth.requireLoggedin, function(req, res, next)
             + "'" + pauze + "', "
             + "'" + naam_uitvoerder + "', "
             + "'" + naam_chauffeur + "', "
+            + "" + nacht + ","
             + "'" + totaal_uren + "');";
     } 
     else
@@ -167,6 +169,7 @@ router.post("/:id", auth.requireLoggedin, function(req, res, next)
             + "pauze = '" + pauze + "', "
             + "naam_uitvoerder = '" + naam_uitvoerder + "', "
             + "naam_chauffeur = '" + naam_chauffeur + "', "
+            + "nacht = " + nacht + ", "
             + "totaal_uren = '" + totaal_uren + "' "
             + "WHERE id = " + id + ";";
     }

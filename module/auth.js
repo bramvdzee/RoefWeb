@@ -25,8 +25,14 @@ module.exports = {
             if(difference > 86400000)
                 return res.status(417).json({message: 'De sessie is verlopen. Log opnieuw in.'});
 
-            req.rol = rows[0].rolnaam;
-            return next();
+            db.query("UPDATE medewerker SET token_exp = '" + getCurrentDate() + "' WHERE authToken = '" + req.query.authToken + "'", function(err, obj)
+            {
+                if(err) throw err;
+                req.rol = rows[0].rolnaam;
+                return next();
+            });
+
+            
 
         });
 
@@ -42,6 +48,8 @@ module.exports = {
             return res.status(403).json({message: 'U heeft geen rechten om deze pagina te bezoeken.'});
         }
     },
+
+
     
     // Try to login the user.
     login: function(req, res, username, password) {

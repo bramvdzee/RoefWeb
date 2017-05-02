@@ -10,7 +10,7 @@ router.get('/', auth.requireLoggedIn, auth.requireRole("Beheerder"), function(re
 
     db.query("SELECT d.*, k.naam as klant_naam "
         + "FROM dagstaat AS d "
-        + "INNER JOIN klant AS k ON d.klant_id = k.id" ,function(err,rows){
+        + "INNER JOIN klant AS k ON d.klant_id = k.id ORDER BY d.id DESC" ,function(err,rows){
         
         if(err) throw err;
 
@@ -51,6 +51,8 @@ router.post('/', auth.requireLoggedIn, function(req, res, next) {
     var naam_uitvoerder = config.escape(req.body.naam_uitvoerder);
     var naam_chauffeur = config.escape(req.body.naam_chauffeur);
     var totaal_uren = req.body.totaal_uren;
+    var nacht = req.body.nacht;
+    var handtekening = req.body.handtekening;
 
     if(!totaal_uren)
     {
@@ -66,7 +68,7 @@ router.post('/', auth.requireLoggedIn, function(req, res, next) {
 
     }
 
-    var query = "INSERT INTO dagstaat (klant_id, kenteken_id, wagentype_id, datum, opmerking, afgifte, transporteur, pauze, naam_uitvoerder, naam_chauffeur, totaal_uren) VALUES ("
+    var query = "INSERT INTO dagstaat (klant_id, kenteken_id, wagentype_id, datum, opmerking, afgifte, transporteur, pauze, naam_uitvoerder, naam_chauffeur, nacht, handtekening, totaal_uren) VALUES ("
     + "" + klant_id + ","
     + "" + kenteken_id + ","
     + "" + wagentype_id + ","
@@ -77,6 +79,8 @@ router.post('/', auth.requireLoggedIn, function(req, res, next) {
     + "'" + pauze + "', "
     + "'" + naam_uitvoerder + "',"
     + "'" + naam_chauffeur + "',"
+    + "" + nacht + "," 
+    + "'" + handtekening + "',"
     + "'" + totaal_uren + "')";
 
     db.query(query, function(err, rows)
@@ -141,6 +145,8 @@ router.put('/:id', auth.requireLoggedIn, auth.requireRole("Beheerder"), function
     var pauze = req.body.pauze;
     var naam_uitvoerder = config.escape(req.body.naam_uitvoerder);
     var naam_chauffeur = config.escape(req.body.naam_chauffeur);
+    var nacht = req.body.nacht;
+    var handtekening = req.body.handtekening;
     var totaal_uren = req.body.totaal_uren;
 
     if(!totaal_uren)
@@ -168,6 +174,8 @@ router.put('/:id', auth.requireLoggedIn, auth.requireRole("Beheerder"), function
     + "pauze = '" + pauze + "', "
     + "naam_uitvoerder = '" + naam_uitvoerder + "',"
     + "naam_chauffeur = '" + naam_chauffeur + "',"
+    + "nacht = " + nacht + ", "
+    + "handtekening = '" + handtekening + "', "
     + "totaal_uren = '" + totaal_uren + "'"
     + "WHERE id = " + req.params.id;
 
