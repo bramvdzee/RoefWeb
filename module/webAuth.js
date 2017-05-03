@@ -17,7 +17,7 @@ module.exports = {
         }
         
         db.query("SELECT m.*, r.naam as rolnaam from medewerker AS m INNER JOIN rol AS r ON m.rol_id = r.id WHERE authToken = '" + auth + "' LIMIT 1", function(err,rows){
-            if(err) throw err;
+            if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
 
             if(rows.length != 1)
                 return res.redirect("login");
@@ -42,7 +42,7 @@ module.exports = {
 
         db.query("SELECT m.*, r.naam as rolnaam FROM medewerker AS m INNER JOIN rol AS r ON m.rol_id = r.id WHERE gebruikersnaam = '" + username + "'", function(err, user)
         {
-            if(err) throw err;
+            if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
 
             user = user[0];
             if(!user)
@@ -70,7 +70,7 @@ module.exports = {
                         db.query("UPDATE medewerker SET authToken = '" + authToken + "', token_exp = '" + date + "' WHERE id = " + user.id + "", function(err, rows)
                         {
 
-                            if(err) throw err;
+                            if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
 
                             storage.setItem("authToken", authToken);
                             return res.redirect("/");

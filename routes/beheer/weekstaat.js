@@ -12,7 +12,7 @@ router.get('/', auth.requireLoggedin, function(req, res, next) {
 
   db.query("SELECT * FROM klant", function(err, rows)
   {
-    if(err) throw err;
+    if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
     return res.render('weekstaat', {klanten: rows, status: status});
   });
 
@@ -48,7 +48,7 @@ router.post('/', auth.requireLoggedin, function(req, res, next) {
         + "(SELECT MAX(losplaats_vertrek) FROM dagstaat_rit WHERE dagstaat_id = d.id) AS dag_eind"
         + " FROM dagstaat as d INNER JOIN wagentype as w ON d.wagentype_id = w.id INNER JOIN klant as k ON d.klant_id = k.id WHERE d.klant_id = " + req.body.inputKlant + " AND d.datum >= '" + datum_begin + "' AND d.datum <= '" + datum_eind + "' ORDER BY d.datum ASC", function(err, rows)
   {
-    if(err) throw err;
+    if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
   
     if(rows.length == 0)
       return res.redirect('/weekstaat?status=Er zijn geen dagstaten voor deze week!');

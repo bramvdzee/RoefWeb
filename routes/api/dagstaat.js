@@ -12,7 +12,7 @@ router.get('/', auth.requireLoggedIn, auth.requireRole("Beheerder"), function(re
         + "FROM dagstaat AS d "
         + "INNER JOIN klant AS k ON d.klant_id = k.id ORDER BY d.id DESC" ,function(err,rows){
         
-        if(err) throw err;
+        if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
 
         for(var i = 0; i < rows.length; i++)
         {
@@ -37,7 +37,7 @@ router.get('/', auth.requireLoggedIn, auth.requireRole("Beheerder"), function(re
 });
 
 router.post('/', auth.requireLoggedIn, function(req, res, next) {
-  
+
     var db = req.app.locals.connection;
 
     var klant_id = req.body.klant_id;
@@ -53,6 +53,15 @@ router.post('/', auth.requireLoggedIn, function(req, res, next) {
     var totaal_uren = req.body.totaal_uren;
     var nacht = req.body.nacht;
     var handtekening = req.body.handtekening;
+
+    if(handtekening)
+    {
+        handtekening = "'" + handtekening + "'";
+    } 
+    else
+    {
+        handtekening = "NULL";
+    }
 
     if(!totaal_uren)
     {
@@ -80,12 +89,12 @@ router.post('/', auth.requireLoggedIn, function(req, res, next) {
     + "'" + naam_uitvoerder + "',"
     + "'" + naam_chauffeur + "',"
     + "" + nacht + "," 
-    + "'" + handtekening + "',"
+    + "" + handtekening + ","
     + "'" + totaal_uren + "')";
 
     db.query(query, function(err, rows)
     {
-        if(err) throw err;
+        if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
 
         var id = rows.insertId;
 
@@ -122,7 +131,7 @@ router.post('/', auth.requireLoggedIn, function(req, res, next) {
 
         db.query(query1, function(err, rows)
         {
-            if(err) throw err;
+            if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
 
             res.json({message: "OK"});
         });
@@ -148,6 +157,15 @@ router.put('/:id', auth.requireLoggedIn, auth.requireRole("Beheerder"), function
     var nacht = req.body.nacht;
     var handtekening = req.body.handtekening;
     var totaal_uren = req.body.totaal_uren;
+
+    if(handtekening)
+    {
+        handtekening = "'" + handtekening + "'";
+    } 
+    else
+    {
+        handtekening = "NULL";
+    }
 
     if(!totaal_uren)
     {
@@ -181,12 +199,12 @@ router.put('/:id', auth.requireLoggedIn, auth.requireRole("Beheerder"), function
 
     db.query(query, function(err, rows)
     {
-        if(err) throw err;
+        if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
 
         db.query("DELETE FROM dagstaat_rit WHERE dagstaat_id = " + req.params.id, function(err, result)
         {
 
-            if(err) throw err;
+            if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
 
             var query1 = "INSERT INTO dagstaat_rit (id, dagstaat_id, opdrachtgever, laadplaats, laadplaats_aankomst, laadplaats_vertrek, losplaats, losplaats_aankomst, losplaats_vertrek, lading, hoeveelheid) VALUES ";
 
@@ -220,7 +238,7 @@ router.put('/:id', auth.requireLoggedIn, auth.requireRole("Beheerder"), function
 
             db.query(query1, function(err, rows)
             {
-                if(err) throw err;
+                if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
 
                 res.json({message: "OK"});
             });
@@ -238,14 +256,14 @@ router.get('/:id', auth.requireLoggedIn, auth.requireRole("Beheerder"), function
     var db = req.app.locals.connection;
 
     db.query('SELECT * FROM dagstaat WHERE id = ' + req.params.id,function(err,rows){
-        if(err) throw err;
+        if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
 
         var dagstaat = rows[0];
 
         db.query("SELECT * FROM dagstaat_rit WHERE dagstaat_id = " + dagstaat.id, function(err, ritten)
         {
 
-            if(err) throw err;
+            if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
 
             dagstaat.ritten = ritten;
             res.json(dagstaat);
@@ -262,7 +280,7 @@ router.delete('/:id', auth.requireLoggedIn, auth.requireRole("Beheerder"), funct
     var db = req.app.locals.connection;
 
     db.query('DELETE FROM dagstaat WHERE id = ' + req.params.id,function(err,rows){
-        if(err) throw err;
+        if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
 
         res.json({message: "OK"});
     });
