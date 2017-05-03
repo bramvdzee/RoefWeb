@@ -92,12 +92,9 @@ app.use('/api/login', login);
 app.locals.storage = localStorage;
 
 app.locals.connection = mysql.createConnection({
-  //host: "databases.aii.avans.nl",
-  //user: "bpzee",
-  //password: "Ab12345",
-  host: 'localhost',
-  user: 'root',
-  password: 'root',
+  host: "databases.aii.avans.nl",
+  user: "bpzee",
+  password: "Ab12345",
   database: "bpzee_db2"
 });
 
