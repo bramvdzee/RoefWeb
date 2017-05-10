@@ -25,6 +25,13 @@ module.exports = {
 
         var counter = 0;
 
+        
+
+        var imageData = dagstaat.handtekening == null ? {text: ""} : {
+                                            image: dagstaat.handtekening, 
+                                            fit: [180,100] 
+                                        };
+
         for(var t = 0; t < tables; t++)
         {
 
@@ -203,10 +210,7 @@ module.exports = {
                                         {text: "Handtekening Uitvoerder: ", style: ['regular','bold']},
                                     ]
                                 },
-                                {
-                                            image: dagstaat.handtekening, 
-                                            fit: [180,100] 
-                                        }
+                                imageData
                             ],
 
                             width: '*',
