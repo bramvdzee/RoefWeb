@@ -11,6 +11,8 @@ module.exports = {
         } else if (!req.query.api_key){
             return res.status(401).json({message: 'U heeft geen recht om deze pagina te bezoeken.'});
         } else if (req.query.api_key != config.api_key){
+            console.log(config.api_key);
+            console.log(req.query.api_key);
             return res.status(401).json({message: 'U heeft geen recht om deze pagina te bezoeken.'});
         }
         
