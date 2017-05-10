@@ -91,7 +91,6 @@ module.exports = {
 
 
         var date = new Date(monthParse + "/" + dayParse + "/" + yearParse);
-        console.log(date);
         var dag = days[date.getDay() - 1];
 
         var nacht = (dagstaat.nacht == 1 ? "(nacht) " : "");
@@ -160,7 +159,7 @@ module.exports = {
                     ],
                 },
                 {
-                    margin: [40,0,0,20],
+                    margin: [40,0,0,40],
                     columns:
                     [
                         {
@@ -192,21 +191,33 @@ module.exports = {
                             
                         },
                         {
-                            text:
+                            stack:
                             [
-                                {text: "Naam Uitvoerder: ", style: ['regular','bold']},
-                                {text: dagstaat.naam_uitvoerder + "\n", style: 'regular'},
-                                {text: "Naam Chauffeur: ", style: ['regular','bold']},
-                                {text: dagstaat.naam_chauffeur + "\n", style: 'regular'},
+                                {
+                                    text:
+                                    [
+                                        {text: "Naam Uitvoerder: ", style: ['regular','bold']},
+                                        {text: dagstaat.naam_uitvoerder + "\n", style: 'regular'},
+                                        {text: "Naam Chauffeur: ", style: ['regular','bold']},
+                                        {text: dagstaat.naam_chauffeur + "\n", style: 'regular'},
+                                        {text: "Handtekening Uitvoerder: ", style: ['regular','bold']},
+                                    ]
+                                },
+                                {
+                                            image: dagstaat.handtekening, 
+                                            fit: [180,100] 
+                                        }
                             ],
+
                             width: '*',
                         }
                     ]
                 },
                 {
                     text: 'Inschrijfnummer Kamer van Koophandel Oost-Brabant 67915108  |  Wij rijden onder A.V.C./CMR condities.',
-                            width: 'auto',
-                            style: 'smaller',
+                    width: 'auto',
+                    style: 'smaller',
+                    absolutePosition: {x: 10, y: 140}
                 }
                     
                 ],
@@ -249,10 +260,16 @@ module.exports = {
         {
             var dagstaat = dagstaten[i];
 
-            if(!data[dagstaat.datum])
-                data[dagstaat.datum] = [];
+            var name = dagstaat.datum;
+            if(dagstaat.nacht == 1)
+            {
+                name += " (nacht)";
+            }
 
-            data[dagstaat.datum].push(dagstaat);
+            if(!data[name])
+                data[name] = [];
+
+            data[name].push(dagstaat);
 
         }
 
@@ -292,7 +309,9 @@ module.exports = {
             var month = (m < 10 ? "0" + m : m);
             var year = realDatum.getFullYear();
 
-            body.push([{text: days[realDatum.getDay() - 1] + " " + date + "/" + month + "/" + year}, '','','']);
+            var nightShift = (datum.indexOf("(nacht)") != -1 ? " (nacht)" : "");
+
+            body.push([{text: days[realDatum.getDay() - 1] + " " + date + "/" + month + "/" + year + "" + nightShift}, '','','']);
 
 
             for(var i = 0; i < data[datum].length; i++)

@@ -10,7 +10,7 @@ module.exports = {
             return res.status(401).json({message: 'U moet ingelogd zijn om deze pagina te bezoeken.'});
         } else if (!req.query.api_key){
             return res.status(401).json({message: 'U heeft geen recht om deze pagina te bezoeken.'});
-        } else if (req.query.api_key != config.app_api_key){
+        } else if (req.query.api_key != config.api_key){
             return res.status(401).json({message: 'U heeft geen recht om deze pagina te bezoeken.'});
         }
         

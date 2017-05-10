@@ -14,15 +14,18 @@ router.get('/', auth.requireLoggedin, function(req, res, next) {
         + "FROM dagstaat AS d "
         + "INNER JOIN klant AS k ON d.klant_id = k.id" ,function(err,rows){
 
-        if(err) throw err;
+        if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
 
         for(var i = 0; i < rows.length; i++)
         {
         
             rows[i].datum = new Date(rows[i].datum).toDateString();
-            rows[i].dag_begin = hourCalc.trim(rows[i].dag_begin);
-            rows[i].dag_eind = hourCalc.trim(rows[i].dag_eind);
-
+            if(rows[i].dag_begin != null && rows[i].dag_eind != null)
+            {
+                
+                rows[i].dag_begin = hourCalc.trim(rows[i].dag_begin);
+                rows[i].dag_eind = hourCalc.trim(rows[i].dag_eind);
+            }
         }
 
         return res.render('overview/dagstaat_list', {data: rows});
@@ -37,12 +40,12 @@ router.get('/:id', auth.requireLoggedin, function(req, res, next) {
 
      db.query('SELECT * FROM dagstaat WHERE id=' + req.params.id ,function(err,rows){
 
-        if(err) throw err;
+        if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
         
         var dagstaat = rows[0];
 
          db.query('SELECT * FROM dagstaat_rit WHERE dagstaat_id=' + req.params.id ,function(err,rows){
-            if(err) throw err;
+            if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
 
 
             var ritten;
@@ -54,21 +57,21 @@ router.get('/:id', auth.requireLoggedin, function(req, res, next) {
             
 
             db.query('SELECT * FROM klant',function(err,rows){
-                if(err) throw err;
+                if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
 
                 var klanten = rows;
 
                 db.query("SELECT * FROM kenteken", function(err, rows)
                 {
 
-                    if(err) throw err;
+                    if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
 
                     var kentekens = rows;
 
                         db.query("SELECT * FROM wagentype", function(err, rows)
                         {
 
-                            if(err) throw err;
+                            if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
                         
                             var wagens = rows;
 
@@ -176,7 +179,7 @@ router.post("/:id", auth.requireLoggedin, function(req, res, next)
 
     db.query(query,function(err,rows){
     
-        if(err) throw err;
+        if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
 
         if(id == 0)
             id = rows.insertId;
@@ -184,7 +187,7 @@ router.post("/:id", auth.requireLoggedin, function(req, res, next)
         db.query("DELETE FROM dagstaat_rit WHERE dagstaat_id = " + id, function(err, rows)
         {
 
-            if(err) throw err;
+            if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
 
             var ritQuery = "INSERT INTO dagstaat_rit (id, dagstaat_id, opdrachtgever, laadplaats, laadplaats_aankomst, laadplaats_vertrek, losplaats, losplaats_aankomst, losplaats_vertrek, lading, hoeveelheid) VALUES ";
 
@@ -224,7 +227,7 @@ router.post("/:id", auth.requireLoggedin, function(req, res, next)
             db.query(ritQuery, function(err, rows)
             {
 
-                if(err) throw err;
+                if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
 
 
                 return res.redirect("/dagstaat");
@@ -243,7 +246,7 @@ router.get('/:id/delete', auth.requireLoggedin, function(req, res, next)
 
     db.query("DELETE FROM dagstaat WHERE id = " + req.params.id, function(err, rows)
     {
-        if(err) throw err;
+        if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
 
         return res.redirect("/dagstaat");
     });
@@ -259,14 +262,14 @@ router.get('/:id/export', auth.requireLoggedin, function(req, res, next) {
             + 'INNER JOIN kenteken ke ON d.kenteken_id = ke.id '
             + 'INNER JOIN wagentype w ON d.wagentype_id = w.id '
             + 'WHERE d.id = ' + req.params.id,function(err,rows){
-        if(err) throw err;
+        if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
 
         var dagstaat = rows[0];
 
         db.query("SELECT * FROM dagstaat_rit WHERE dagstaat_id = " + dagstaat.id, function(err, ritten)
         {
 
-            if(err) throw err;
+            if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
 
             dagstaat.ritten = ritten;
 

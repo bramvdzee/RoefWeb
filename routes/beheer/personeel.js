@@ -8,7 +8,7 @@ router.get('/', auth.requireLoggedin, function(req, res, next) {
   var db = req.app.locals.connection;
 
   db.query('SELECT m.*, r.naam as rolnaam FROM medewerker as m INNER JOIN rol as r ON m.rol_id = r.id',function(err,rows){
-        if(err) throw err;
+        if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
 
         return res.render('overview/personeel_list', {data: rows});
     });
@@ -20,12 +20,12 @@ router.get('/:id', auth.requireLoggedin, function(req, res, next) {
   var db = req.app.locals.connection;
 
   db.query('SELECT * FROM medewerker WHERE id = ' + req.params.id,function(err,rows){
-        if(err) throw err;
+        if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
 
         var medewerker = rows[0];
 
         db.query('SELECT * FROM rol',function(err,rows){
-            if(err) throw err;
+            if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
 
             var rollen = rows;
 
@@ -100,7 +100,7 @@ router.post('/:id', auth.requireLoggedin, function(req, res, next) {
 
   db.query(query, function(err, rows)
   {
-    if(err) throw err;
+    if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
     return res.redirect('/personeel');
   });
 
@@ -114,7 +114,7 @@ router.get('/:id/delete', auth.requireLoggedin, function(req, res, next) {
 
   db.query("DELETE FROM medewerker WHERE id = " + req.params.id, function(err, rows)
   {
-    if(err) throw err;
+    if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
     return res.redirect('/personeel');
   });
 
@@ -125,7 +125,7 @@ router.get('/:id/logout', auth.requireLoggedin, function(req, res, next) {
   var db = req.app.locals.connection;
 
   db.query("UPDATE medewerker SET authToken='' WHERE id = " + req.params.id,function(err,rows){
-        if(err) throw err;
+        if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
 
         
 
