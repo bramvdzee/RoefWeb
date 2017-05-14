@@ -89,7 +89,7 @@ module.exports = {
 
         }
 
-        var days = ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag", "Zondag"];
+        var days = ["Zondag", "Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag"];
 
         var dateParse = dagstaat.datum.split("/");
         var dayParse = (parseInt(dateParse[0]) < 10 ? "0" + dateParse[0] : dateParse[0]);
@@ -98,7 +98,8 @@ module.exports = {
 
 
         var date = new Date(monthParse + "/" + dayParse + "/" + yearParse);
-        var dag = days[date.getDay() - 1];
+        var dag = days[date.getDay()];
+        console.log(date.getDay());
 
         var nacht = (dagstaat.nacht == 1 ? "(nacht) " : "");
 
@@ -298,7 +299,7 @@ module.exports = {
 
         var body = [];
         var totalBody = [];
-        var days = ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag", "Zondag"];
+        var days = ["Zondag", "Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag"];
 
         body.push([{text: 'Datum', style: 'tableHeader'}, {text: 'Dagstaat ID', style: 'tableHeader'}, {text: 'Wagentype', style: 'tableHeader'}, {text: 'Totaal uren', style: 'tableHeader'}]);
         totalBody.push([{text: 'Totaaloverzicht', style: 'tableHeader'}, {text: '', style: 'tableHeader'}, {text: 'Wagentype', style: 'tableHeader'}, {text: 'Totaal uren', style: 'tableHeader'}]);
@@ -315,7 +316,7 @@ module.exports = {
 
             var nightShift = (datum.indexOf("(nacht)") != -1 ? " (nacht)" : "");
 
-            body.push([{text: days[realDatum.getDay() - 1] + " " + date + "/" + month + "/" + year + "" + nightShift}, '','','']);
+            body.push([{text: days[realDatum.getDay()] + " " + date + "/" + month + "/" + year + "" + nightShift}, '','','']);
 
 
             for(var i = 0; i < data[datum].length; i++)
