@@ -6,18 +6,16 @@ module.exports = {
 
     requireLoggedIn: function(req, res, next) {     
 
-        if (!req.query.authToken) {
+        if (!req.headers.authtoken) {
             return res.status(401).json({message: 'U moet ingelogd zijn om deze pagina te bezoeken.'});
-        } else if (!req.query.api_key){
+        } else if (!req.headers.api_key){
             return res.status(401).json({message: 'U heeft geen recht om deze pagina te bezoeken.'});
-        } else if (req.query.api_key != config.api_key){
-            console.log(config.api_key);
-            console.log(req.query.api_key);
+        } else if (req.headers.api_key != config.api_key){
             return res.status(401).json({message: 'U heeft geen recht om deze pagina te bezoeken.'});
         }
         
         var db = req.app.locals.connection;
-        db.query("SELECT m.*, r.naam as rolnaam from medewerker AS m INNER JOIN rol AS r ON m.rol_id = r.id WHERE authToken = '" + req.query.authToken + "' LIMIT 1", function(err,rows){
+        db.query("SELECT m.*, r.naam as rolnaam from medewerker AS m INNER JOIN rol AS r ON m.rol_id = r.id WHERE authToken = '" + req.headers.authtoken + "' LIMIT 1", function(err,rows){
             if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
 
             if(rows.length != 1)
@@ -27,7 +25,7 @@ module.exports = {
             if(difference > 86400000)
                 return res.status(417).json({message: 'De sessie is verlopen. Log opnieuw in.'});
 
-            db.query("UPDATE medewerker SET token_exp = '" + getCurrentDate() + "' WHERE authToken = '" + req.query.authToken + "'", function(err, obj)
+            db.query("UPDATE medewerker SET token_exp = '" + getCurrentDate() + "' WHERE authToken = '" + req.headers.authtoken + "'", function(err, obj)
             {
                 if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
                 req.rol = rows[0].rolnaam;
@@ -120,7 +118,7 @@ module.exports = {
         
         var db = req.app.locals.connection;
 
-        db.query("UPDATE medewerker SET authToken = '' WHERE authToken = '" + req.query.authToken + "'", function(err, rows)
+        db.query("UPDATE medewerker SET authToken = '' WHERE authToken = '" + req.headers.authtoken + "'", function(err, rows)
         {
             if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
 
