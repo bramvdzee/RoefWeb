@@ -63,6 +63,7 @@ module.exports = {
             if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
 
             user = user[0];
+
             if(!user)
             {
                 var fail = onLoginFail(req.connection.remoteAddress);

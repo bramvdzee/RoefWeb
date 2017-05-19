@@ -94,6 +94,8 @@ app.locals.storage = localStorage;
 app.locals.connection = mysql.createConnection({
   host: "localhost",
   user: "root",
+  // password: "root",
+  // database: "bpzee_db2"
   password: "zzWtbSgm3!",
   database: "RoefDb"
 });

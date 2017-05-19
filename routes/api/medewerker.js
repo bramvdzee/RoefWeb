@@ -8,7 +8,7 @@ router.get('/', auth.requireLoggedIn, auth.requireRole("Beheerder"), function(re
   
     var db = req.app.locals.connection;
 
-    db.query('SELECT * FROM medewerker ORDER BY achternaam ASC',function(err,rows){
+    db.query('SELECT m.*, r.naam as rolnaam FROM medewerker as m INNER JOIN rol as r ON m.rol_id = r.id ORDER BY m.achternaam ASC',function(err,rows){
         if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
 
         res.send(rows);

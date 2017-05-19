@@ -38,7 +38,7 @@ router.post('/:id', auth.requireLoggedin, function(req, res, next) {
 
     if(req.params.id == 0)
     {
-        db.query("INSERT INTO klant (naam, woonplaats) VALUES ('" + name + "', '" + woonplaats +"')" ,function(err,rows){
+        db.query("INSERT INTO klant (naam, woonplaats) VALUES ('" + naam + "', '" + woonplaats +"')" ,function(err,rows){
             if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
 
             return res.redirect('/klant');
