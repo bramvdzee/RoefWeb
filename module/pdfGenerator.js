@@ -30,8 +30,6 @@ module.exports = {
                                             fit: [180,100] 
                                         };
 
-        console.log(imageData);
-
         for(var t = 0; t < tables; t++)
         {
 
@@ -292,6 +290,12 @@ module.exports = {
             
             totalData[dagstaat.wagentype].hours += hours;
             totalData[dagstaat.wagentype].minutes += minutes;
+
+            if(totalData[dagstaat.wagentype].minutes > 60)
+            {
+                totalData[dagstaat.wagentype].minutes = (totalData[dagstaat.wagentype].minutes - 60);
+                totalData[dagstaat.wagentype].hours++;
+            }
 
         }
 
