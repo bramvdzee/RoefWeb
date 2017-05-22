@@ -93,6 +93,7 @@ app.locals.storage = localStorage;
 
 app.locals.connection = mysql.createConnection({
   host: "localhost",
+  //host: '5.61.254.196',
   user: "root",
   // password: "root",
   // database: "bpzee_db2"

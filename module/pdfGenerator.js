@@ -25,12 +25,12 @@ module.exports = {
 
         var counter = 0;
 
-        
-
-        var imageData = dagstaat.handtekening == null ? {text: ""} : {
+        var imageData = (dagstaat.handtekening == null || dagstaat.handtekening == 'NULL') ? {text: ""} : {
                                             image: dagstaat.handtekening, 
                                             fit: [180,100] 
                                         };
+
+        console.log(imageData);
 
         for(var t = 0; t < tables; t++)
         {
@@ -99,10 +99,8 @@ module.exports = {
 
         var date = new Date(monthParse + "/" + dayParse + "/" + yearParse);
         var dag = days[date.getDay()];
-        console.log(date.getDay());
 
         var nacht = (dagstaat.nacht == 1 ? "(nacht) " : "");
-
 
         var dd = {
             pageSize: 'A4',

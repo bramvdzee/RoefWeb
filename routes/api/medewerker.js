@@ -27,6 +27,11 @@ router.post('/', auth.requireLoggedIn, auth.requireRole("Beheerder"), function(r
     var gebruikersnaam = config.escape(req.body.gebruikersnaam);
     var ww = bcrypt.hashSync(req.body.wachtwoord);
 
+    if(!voornaam || !achternaam || !rol_id || !gebruikersnaam || !ww)
+    {
+        return res.status(500).json({ message: 'Er staan nog verplichte velden open!' });
+    }
+
     if(req.body.tussenvoegsel)
         query += ", tussenvoegsel";
     
@@ -63,6 +68,11 @@ router.put('/:id', auth.requireLoggedIn, auth.requireRole("Beheerder"), function
     var achternaam = config.escape(req.body.achternaam);
     var rol_id = req.body.rol_id;
     var gebruikersnaam = config.escape(req.body.gebruikersnaam);
+
+    if(!voornaam || !achternaam || !rol_id || !gebruikersnaam)
+    {
+        return res.status(500).json({ message: 'Er staan nog verplichte velden open!' });
+    }
 
     var query = "UPDATE medewerker SET " +
     "voornaam = '" + voornaam + "'," +

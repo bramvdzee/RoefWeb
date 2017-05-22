@@ -48,7 +48,7 @@ router.get('/:id', auth.requireLoggedIn, auth.requireRole("Beheerder"), function
     db.query('SELECT * FROM klant WHERE id = ' + req.params.id,function(err,rows){
         if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
 
-        res.send(rows);
+        res.send(rows[0]);
     });
 
 });
