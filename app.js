@@ -91,22 +91,37 @@ app.use('/api/login', login);
 
 app.locals.storage = localStorage;
 
-app.locals.connection = mysql.createConnection({
+var db_config = {
   host: "localhost",
-  //host: '5.61.254.196',
   user: "root",
   // password: "root",
   // database: "bpzee_db2"
   password: "zzWtbSgm3!",
   database: "RoefDb"
-});
+}
 
-app.locals.connection.connect(function(err){
-  if(err){
-    console.log('Error connecting to Db');
-    return;
-  }
-});
+function handleDisconnect() {
+  app.locals.connection = mysql.createConnection(db_config); // Recreate the connection, since
+                                                  // the old one cannot be reused.
+
+  app.locals.connection.connect(function(err) {              // The server is either down
+    if(err) {                                     // or restarting (takes a while sometimes).
+      console.log('error when connecting to db:', err);
+      setTimeout(handleDisconnect, 2000); // We introduce a delay before attempting to reconnect,
+    }                                     // to avoid a hot loop, and to allow our node script to
+  });                                     // process asynchronous requests in the meantime.
+                                          // If you're also serving http, display a 503 error.
+  app.locals.connection.on('error', function(err) {
+    console.log('db error', err);
+    if(err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
+      handleDisconnect();                         // lost due to either server restart, or a
+    } else {                                      // connnection idle timeout (the wait_timeout
+      throw err;                                  // server variable configures this)
+    }
+  });
+}
+
+handleDisconnect();
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
