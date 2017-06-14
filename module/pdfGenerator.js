@@ -19,24 +19,21 @@ module.exports = {
 
         var printer = new PdfPrinter(this.fonts);
         
-        var tables = parseInt(dagstaat.ritten.length / 10) + 1;
-
-        var content = [];
-
-        var counter = 0;
+        var content = {};
 
         var imageData = (dagstaat.handtekening == null || dagstaat.handtekening == 'NULL') ? {text: ""} : {
                                             image: dagstaat.handtekening, 
                                             fit: [180,100] 
                                         };
 
-        for(var t = 0; t < tables; t++)
-        {
+        content.table = {};
+        content.table.headerRows = 1;
+        content.table.style = 'regular';
+        content.table.widths = [ 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto' ];
+        content.width = "95%";
+        content.table.body = [];
 
-            var obj = {};
-
-            var body = [];
-            body.push(
+        content.table.body.push(
             [{text:"Rit", style: ['regular', 'bold']},
             {text:"Opdrachtgever", style: ['regular', 'bold']},
             {text:"Laadplaats", style: ['regular', 'bold']},
@@ -48,42 +45,24 @@ module.exports = {
             {text:"Lading", style: ['regular', 'bold']},
             {text:"Hoeveelheid", style: ['regular', 'bold']}]); 
 
-            var max = (dagstaat.ritten.length - counter > 10 ? 10 : dagstaat.ritten.length - counter);
 
+        for(var i = 0; i < parseInt(dagstaat.ritten.length); i++)
+        {
+            var row = [];
+            var rit = dagstaat.ritten[i];
 
-            for(var i = 0; i < max; i++)
-            {
-                var row = [];
-                var rit = dagstaat.ritten[counter];
+            row.push({ text: rit.id, fontSize: 11});
+            row.push({ text: rit.opdrachtgever, fontSize: 11});
+            row.push({ text: rit.laadplaats, fontSize: 11});
+            row.push({ text: rit.laadplaats_aankomst.substr(0,5), fontSize: 11});
+            row.push({ text: rit.laadplaats_vertrek.substr(0,5), fontSize: 11});
+            row.push({ text: rit.losplaats, fontSize: 11});
+            row.push({ text: rit.losplaats_aankomst.substr(0,5), fontSize: 11});
+            row.push({ text: rit.losplaats_vertrek.substr(0,5), fontSize: 11});
+            row.push({ text: rit.lading, fontSize: 11});
+            row.push({ text: rit.hoeveelheid, fontSize: 11});    
 
-                row.push({ text: rit.id, fontSize: 11});
-                row.push({ text: rit.opdrachtgever, fontSize: 11});
-                row.push({ text: rit.laadplaats, fontSize: 11});
-                row.push({ text: rit.laadplaats_aankomst.substr(0,5), fontSize: 11});
-                row.push({ text: rit.laadplaats_vertrek.substr(0,5), fontSize: 11});
-                row.push({ text: rit.losplaats, fontSize: 11});
-                row.push({ text: rit.losplaats_aankomst.substr(0,5), fontSize: 11});
-                row.push({ text: rit.losplaats_vertrek.substr(0,5), fontSize: 11});
-                row.push({ text: rit.lading, fontSize: 11});
-                row.push({ text: rit.hoeveelheid, fontSize: 11});    
-
-                body.push(row);
-
-                counter++;
-
-            }
-
-            obj.table = {};
-            obj.table.headerRows = 1;
-            obj.table.style = 'regular';
-            obj.table.widths = [ 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto' ];
-            obj.table.body = body;
-            obj.width = "95%";
-
-            if(t+1 != tables)
-                obj.pageBreak = "after";
-
-            content.push(obj);
+            content.table.body.push(row);
 
         }
 
@@ -291,7 +270,7 @@ module.exports = {
             totalData[dagstaat.wagentype].hours += hours;
             totalData[dagstaat.wagentype].minutes += minutes;
 
-            if(totalData[dagstaat.wagentype].minutes > 60)
+            if(totalData[dagstaat.wagentype].minutes >= 60)
             {
                 totalData[dagstaat.wagentype].minutes = (totalData[dagstaat.wagentype].minutes - 60);
                 totalData[dagstaat.wagentype].hours++;
