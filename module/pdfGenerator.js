@@ -51,14 +51,19 @@ module.exports = {
             var row = [];
             var rit = dagstaat.ritten[i];
 
+            var la_begin = (rit.laadplaats_aankomst ? rit.laadplaats_aankomst.substr(0,5) : "00:00")
+            var la_eind = (rit.laadplaats_vertrek ? rit.laadplaats_vertrek.substr(0,5) : "00:00")
+            var lo_begin = (rit.losplaats_aankomst ? rit.losplaats_aankomst.substr(0,5) : "00:00")
+            var lo_eind = (rit.losplaats_vertrek ? rit.losplaats_vertrek.substr(0,5) : "00:00")
+
             row.push({ text: rit.id, fontSize: 11});
             row.push({ text: rit.opdrachtgever, fontSize: 11});
             row.push({ text: rit.laadplaats, fontSize: 11});
-            row.push({ text: rit.laadplaats_aankomst.substr(0,5), fontSize: 11});
-            row.push({ text: rit.laadplaats_vertrek.substr(0,5), fontSize: 11});
+            row.push({ text: la_begin, fontSize: 11});
+            row.push({ text: la_eind, fontSize: 11});
             row.push({ text: rit.losplaats, fontSize: 11});
-            row.push({ text: rit.losplaats_aankomst.substr(0,5), fontSize: 11});
-            row.push({ text: rit.losplaats_vertrek.substr(0,5), fontSize: 11});
+            row.push({ text: lo_begin, fontSize: 11});
+            row.push({ text: lo_eind, fontSize: 11});
             row.push({ text: rit.lading, fontSize: 11});
             row.push({ text: rit.hoeveelheid, fontSize: 11});    
 
