@@ -177,7 +177,10 @@ $(document).ready(function()
             if(ritten.length == 0)
                 alert("Een dagstaat zonder ritten kan niet opgeslagen worden!");
             else
+            {
+                console.log("submit");
                 $(".form-horizontal").off().submit();
+            }
         }
     });
 

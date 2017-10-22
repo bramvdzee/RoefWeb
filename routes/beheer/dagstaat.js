@@ -113,14 +113,14 @@ router.post("/:id", auth.requireLoggedin, function(req, res, next)
     var id = req.params.id;
     var klant_id = req.body.inputKlant;
     var datum = req.body.inputDatum;
-    var afgifte = req.body.inputAfgifte;
+    var afgifte = mysqlEscape(req.body.inputAfgifte);
     var transporteur = req.body.inputTransporteur;
     var kenteken_id = req.body.inputKenteken;
     var wagentype_id = req.body.inputWagen;
-    var opmerking = req.body.inputOpmerking;
+    var opmerking = mysqlEscape(req.body.inputOpmerking);
     var pauze = req.body.inputPauze;
-    var naam_uitvoerder = req.body.inputNaamUitvoerder;
-    var naam_chauffeur = req.body.inputNaamChauffeur;
+    var naam_uitvoerder = mysqlEscape(req.body.inputNaamUitvoerder);
+    var naam_chauffeur = mysqlEscape(req.body.inputNaamChauffeur);
     var nacht = req.body.inputNacht;
     var ritten = parseInt(req.body.inputRitten);
     
@@ -178,31 +178,39 @@ router.post("/:id", auth.requireLoggedin, function(req, res, next)
     }
 
     db.query(query,function(err,rows){
-    
-        if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
 
+        if(err) 
+        {
+            console.log(err);
+            return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw. 1\2' });
+        }
         if(id == 0)
             id = rows.insertId;
 
         db.query("DELETE FROM dagstaat_rit WHERE dagstaat_id = " + id, function(err, rows)
         {
 
-            if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
+            if(err)
+            {
+                console.log(err); 
+                return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw. 2' });
+            }
+            
 
             var ritQuery = "INSERT INTO dagstaat_rit (id, dagstaat_id, opdrachtgever, laadplaats, laadplaats_aankomst, laadplaats_vertrek, losplaats, losplaats_aankomst, losplaats_vertrek, lading, hoeveelheid) VALUES ";
 
             for(var i = 0; i < ritten; i++)
             {
                 var rit_id = i+1;
-                var rit_opdrachtgever = req.body["inputOpdrachtgever_" + rit_id];
-                var rit_laadplaats = req.body["inputLaadplaats_" + rit_id];
+                var rit_opdrachtgever = mysqlEscape(req.body["inputOpdrachtgever_" + rit_id]);
+                var rit_laadplaats = mysqlEscape(req.body["inputLaadplaats_" + rit_id]);
                 var rit_laadplaats_aankomst = req.body["inputLaadplaatsAankomst_" + rit_id];
                 var rit_laadplaats_vertrek = req.body["inputLaadplaatsVertrek_" + rit_id];
-                var rit_losplaats = req.body["inputLosplaats_" + rit_id];
+                var rit_losplaats = mysqlEscape(req.body["inputLosplaats_" + rit_id]);
                 var rit_losplaats_aankomst = req.body["inputLosplaatsAankomst_" + rit_id];
                 var rit_losplaats_vertrek = req.body["inputLosplaatsVertrek_" + rit_id];
-                var rit_lading = req.body["inputLading_" + rit_id];
-                var rit_hoeveelheid = req.body["inputHoeveelheid_" + rit_id];
+                var rit_lading = mysqlEscape(req.body["inputLading_" + rit_id]);
+                var rit_hoeveelheid = mysqlEscape(req.body["inputHoeveelheid_" + rit_id]);
 
                 if(rit_id > 1)
                     ritQuery += ", ";
@@ -227,8 +235,11 @@ router.post("/:id", auth.requireLoggedin, function(req, res, next)
             db.query(ritQuery, function(err, rows)
             {
 
-                if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
-
+                if(err)
+                {
+                    console.log(err); 
+                    return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw. 3' });
+                }
 
                 return res.redirect("/dagstaat");
 
@@ -290,5 +301,16 @@ router.get('/:id/export', auth.requireLoggedin, function(req, res, next) {
     });
 
 });
+
+function mysqlEscape(stringToEscape){
+    return stringToEscape
+        .replace("\\", "\\\\")
+        .replace("\'", "\\\'")
+        .replace("\"", "\\\"")
+        .replace("\n", "\\\n")
+        .replace("\r", "\\\r")
+        .replace("\x00", "\\\x00")
+        .replace("\x1a", "\\\x1a");
+}
 
 module.exports = router;

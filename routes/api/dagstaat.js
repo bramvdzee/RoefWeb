@@ -94,7 +94,7 @@ router.post('/', auth.requireLoggedIn, function(req, res, next) {
 
     db.query(query, function(err, rows)
     {
-        if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
+        if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw. insert 1' });
 
         var id = rows.insertId;
 
@@ -131,7 +131,7 @@ router.post('/', auth.requireLoggedIn, function(req, res, next) {
 
         db.query(query1, function(err, rows)
         {
-            if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
+            if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw. insert 2' });
 
             res.json({message: "OK"});
         });
@@ -199,12 +199,12 @@ router.put('/:id', auth.requireLoggedIn, auth.requireRole("Beheerder"), function
 
     db.query(query, function(err, rows)
     {
-        if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
+        if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw. update 1' });
 
         db.query("DELETE FROM dagstaat_rit WHERE dagstaat_id = " + req.params.id, function(err, result)
         {
 
-            if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
+            if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw. update 2' });
 
             var query1 = "INSERT INTO dagstaat_rit (id, dagstaat_id, opdrachtgever, laadplaats, laadplaats_aankomst, laadplaats_vertrek, losplaats, losplaats_aankomst, losplaats_vertrek, lading, hoeveelheid) VALUES ";
 
@@ -238,7 +238,7 @@ router.put('/:id', auth.requireLoggedIn, auth.requireRole("Beheerder"), function
 
             db.query(query1, function(err, rows)
             {
-                if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.' });
+                if(err) return res.status(500).json({ message: 'Er is een fout opgetreden. Probeer het later opnieuw.update 3' });
 
                 res.json({message: "OK"});
             });

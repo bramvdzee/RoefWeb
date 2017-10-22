@@ -95,7 +95,7 @@ var db_config = {
   host: "localhost",
   user: "root",
   // password: "root",
-  // database: "bpzee_db2"
+  // database: "deroef"
   password: "zzWtbSgm3!",
   database: "RoefDb"
 }
